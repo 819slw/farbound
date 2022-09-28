@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "avue-data": "^2.0.0",
     "axios": "^0.18.0",
     "echarts": "^4.1.0",
     "echarts-liquidfill": "^2.0.2",
