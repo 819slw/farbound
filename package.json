@@ -12,7 +12,7 @@
   "dependencies": {
     "avue-data": "^2.0.0",
     "axios": "^0.18.0",
-    "echarts": "^4.1.0",
+    "echarts": "^4.9.0",
     "echarts-liquidfill": "^2.0.2",
     "element-ui": "^2.4.5",
     "ezuikit-js": "^0.6.3",
