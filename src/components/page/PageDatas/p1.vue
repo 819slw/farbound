@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-29 10:50:21
+ * @LastEditTime: 2022-09-29 21:45:15
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -14,7 +14,33 @@
 
     <!-- 地图 -->
     <div class="mapArea">
-
+      <div class="selectArea">
+        <el-select v-model="partVal" placeholder="所有部分">
+          <el-option
+            v-for="item in partArr"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="levelVal" placeholder="所有电压等级">
+          <el-option
+            v-for="item in levelArr"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="deviceVal" placeholder="所有设备">
+          <el-option
+            v-for="item in deviceArr"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="mapInit" id="mapInit"></div>
     </div>
 
     <div class="wrapper1 areaStyle">
@@ -96,10 +122,17 @@
 
 <script>
 import * as echarts from "echarts";
+import { reqDeviceList } from "@/api/index";
 export default {
   data() {
     return {
       height: 0,
+      partArr: [],
+      levelArr: [],
+      deviceArr: [],
+      partVal: "",
+      levelVal: "",
+      deviceVal: "",
       // 设备类型统计: https://www.makeapie.cn/echarts_content/xvh81yeAKa.html
       deviceTypeData: {
         xData: ["防外破监测", "视频监测", "图像检测", "布控球"],
@@ -144,17 +177,44 @@ export default {
       this.initdeviceType();
       // 报警统计-init
       this.initAlarm();
-      // 设备在线状态 - init
-      this.initDeviceStatus();
-      // 设备总数
-      this.initDeviceTotal();
+      // 接口 设备列表
+      this.initDeviceList();
+      // 初始化地图
+      this.initMap();
     });
   },
   methods: {
+    initDeviceList() {
+      reqDeviceList({
+        depart_id: "1/21/"
+      }).then(res => {
+        let arr = res.data;
+        this.deviceStatusData.data[0].value = arr.filter(
+          v => v.status == 1
+        ).length;
+        this.deviceStatusData.data[1].value = arr.filter(
+          v => v.status != 1
+        ).length;
+
+        // 设备在线状态 - init
+        this.initDeviceStatus();
+
+        this.deviceTotal[0].value = arr.length;
+        // 设备总数
+        this.initDeviceTotal();
+      });
+    },
     // 初始化高度
     initHieght() {
       let dom = document.querySelector(".bottomWrapper");
       this.height = dom.offsetHeight - 10;
+    },
+    // 初始化地图
+    initMap() {
+      // mapInit
+      // YJ.on().then(() => {
+      //   new YJ.YJEarth("mapInit");
+      // });
     },
     // 设备总数 - init
     initDeviceTotal() {
@@ -883,6 +943,18 @@ export default {
     left: 25vw;
     height: 90vh;
     width: 50vw;
+    display: flex;
+    flex-direction: column;
+    .mapInit {
+      flex: 1;
+    }
+    .selectArea {
+      display: flex;
+      justify-content: center;
+      /deep/ .el-select {
+        margin-left: 15px;
+      }
+    }
   }
   .areaStyle {
     height: 30vh;
