@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-29 22:35:50
+ * @LastEditTime: 2022-09-29 22:59:08
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -47,12 +47,12 @@
       <div class="intoGid">
         <div class="title flexx">
           <div class="btnBoxGrid">
-          <div class="btnBox bb1 color">
+          <div class="btnBox bb1 color" @click="imgInto">
           <img :src="require('../../../assets/icons/duosucai.svg')" alt="">
             最新图片</div>
         </div>
         <div class="btnBoxGrid">
-          <div class="btnBox bb2">
+          <div class="btnBox bb2" @click="videoInto">
           <img :src="require('../../../assets/icons/shipin.svg')" alt="">
             实时视频</div>
         </div>
@@ -193,6 +193,12 @@ export default {
     });
   },
   methods: {
+    videoInto() {
+      this.$router.push("/video");
+    },
+    imgInto() {
+      this.$router.push("/img");
+    },
     initLogList0() {
       getLogList({
         depart_id: this.userInfo.depart_id,
@@ -939,6 +945,7 @@ export default {
       justify-content: center;
       font-weight: bold;
       font-size: 1.8vh;
+      cursor: pointer;
     }
   }
 

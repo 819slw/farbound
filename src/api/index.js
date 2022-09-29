@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-14 11:17:12
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-29 22:10:52
+ * @LastEditTime: 2022-09-29 23:59:53
  * @FilePath: /farbound/src/api/index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -58,3 +58,15 @@ export const getToken = () =>
 // 图片 getLogList
 export const getLogList = data =>
   ajax(BASE_URL + "/api/v1/mobile/log/list", data, "POST");
+
+// 图片 getLogList
+export const getimgList = data =>
+  ajax(
+    BASE_URL + "/api/v1/mobile/log/getLogByDeviceSerialWithTime",
+    data,
+    "POST"
+  );
+
+// 设备列表
+export const getdeviceList = data =>
+  ajax(BASE_URL + "/api/v1/mobile/device/list", data, "POST");

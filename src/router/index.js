@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-06 17:49:16
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-28 19:58:46
+ * @LastEditTime: 2022-09-29 22:58:47
  * @FilePath: /farbound/src/router/index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -21,6 +21,14 @@ export default new Router({
     {
       path: "/fristPage",
       component: () => import("../components/page/PageDatas/p1.vue")
+    },
+    {
+      path: "/img",
+      component: () => import("../components/page/PageDatas/img.vue")
+    },
+    {
+      path: "/video",
+      component: () => import("../components/page/PageDatas/video.vue")
     },
     {
       path: "/",
