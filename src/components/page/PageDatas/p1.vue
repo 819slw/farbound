@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-29 21:45:15
+ * @LastEditTime: 2022-09-29 22:35:50
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -59,11 +59,11 @@
         </div>
         <div class="bottomWrapper">
           <el-carousel v-if="height" :height="height + 'px'" indicator-position="none">
-            <el-carousel-item v-for="item in 4" :key="item">
+            <el-carousel-item v-for="item in logImgs0" :key="item.id">
               <div class="swiperBox">
-                <img :src="require('../../../assets/page1/test1.jpeg')" />
-                <p class="time">时间:2019-02-29 19:12:22</p>
-                <p class="time">设备:asdfasfdasfas号</p>
+                <img :src="item.detail[0].pic_url" />
+                <p class="time">时间:{{ item.create_at }}</p>
+                <p class="time">设备:{{ item.deviceName }}</p>
               </div>
             </el-carousel-item>
           </el-carousel>
@@ -106,11 +106,11 @@
           更多报警</div>
         <div class="bottomWrapper">
           <el-carousel v-if="height" :height="height + 'px'" indicator-position="none">
-            <el-carousel-item v-for="item in 4" :key="item">
+            <el-carousel-item v-for="item in logImgs1" :key="item.id">
               <div class="swiperBox">
-                <img :src="require('../../../assets/page1/test1.jpeg')" />
-                <p class="time">时间:2019-02-29 19:12:22</p>
-                <p class="time">设备:asdfasfdasfas号</p>
+                <img :src="item.detail[0].pic_url" />
+                <p class="time">时间:{{ item.create_at }}</p>
+                <p class="time">设备:{{ item.deviceName }}</p>
               </div>
             </el-carousel-item>
           </el-carousel>
@@ -122,7 +122,7 @@
 
 <script>
 import * as echarts from "echarts";
-import { reqDeviceList } from "@/api/index";
+import { reqDeviceList, getLogList, reqDepartList } from "@/api/index";
 export default {
   data() {
     return {
@@ -133,6 +133,9 @@ export default {
       partVal: "",
       levelVal: "",
       deviceVal: "",
+      logImgs0: [],
+      userInfo: {},
+      logImgs1: [],
       // 设备类型统计: https://www.makeapie.cn/echarts_content/xvh81yeAKa.html
       deviceTypeData: {
         xData: ["防外破监测", "视频监测", "图像检测", "布控球"],
@@ -140,14 +143,15 @@ export default {
       },
       //报警统计: https://www.makeapie.cn/echarts_content/x0oZWoncE.html
       alarmData: {
-        yData: [5000, 2600, 1300, 1300, 1250, 1500],
+        yData: [5000, 2600, 1300, 1300, 1250, 1250, 1500],
         xData: [
-          "制造业",
-          "建筑业",
-          "农林牧渔",
-          "房地产",
-          "金融业",
-          "居民服务及其他"
+          "吊车",
+          "塔吊",
+          "挖掘机",
+          "工程车",
+          "人员入侵检测",
+          "异物悬挂",
+          "烟火识别"
         ]
       },
       deviceTotal: [
@@ -171,6 +175,8 @@ export default {
     };
   },
   mounted() {
+    this.userInfo = JSON.parse(localStorage.getItem("user"));
+    console.log(this.userInfo);
     this.$nextTick(() => {
       this.initHieght();
       // 设备类型统计-init
@@ -181,12 +187,35 @@ export default {
       this.initDeviceList();
       // 初始化地图
       this.initMap();
+      // 初始化swiper 0 + 1
+      this.initLogList0();
+      this.initLogList1();
     });
   },
   methods: {
+    initLogList0() {
+      getLogList({
+        depart_id: this.userInfo.depart_id,
+        page: 1,
+        pageSize: 10,
+        push_type: 0
+      }).then(res => {
+        this.logImgs0 = res.data.list;
+      });
+    },
+    initLogList1() {
+      getLogList({
+        depart_id: this.userInfo.depart_id,
+        page: 1,
+        pageSize: 10,
+        push_type: 1
+      }).then(res => {
+        this.logImgs1 = res.data.list;
+      });
+    },
     initDeviceList() {
       reqDeviceList({
-        depart_id: "1/21/"
+        depart_id: this.userInfo.depart_id
       }).then(res => {
         let arr = res.data;
         this.deviceStatusData.data[0].value = arr.filter(
@@ -214,6 +243,7 @@ export default {
       // mapInit
       // YJ.on().then(() => {
       //   new YJ.YJEarth("mapInit");
+      //   new YJ.Layer.GDWXImagery();
       // });
     },
     // 设备总数 - init
