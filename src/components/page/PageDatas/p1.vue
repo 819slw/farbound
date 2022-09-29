@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-29 00:21:36
+ * @LastEditTime: 2022-09-29 10:50:21
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -18,34 +18,66 @@
     </div>
 
     <div class="wrapper1 areaStyle">
-      <div class="intoGid flexx">
-        <div class="btnBoxGrid">
-          <div class="btnBox bb1 color">最新图片</div>
+      <div class="intoGid">
+        <div class="title flexx">
+          <div class="btnBoxGrid">
+          <div class="btnBox bb1 color">
+          <img :src="require('../../../assets/icons/duosucai.svg')" alt="">
+            最新图片</div>
         </div>
         <div class="btnBoxGrid">
-          <div class="btnBox bb2">实时视频</div>
+          <div class="btnBox bb2">
+          <img :src="require('../../../assets/icons/shipin.svg')" alt="">
+            实时视频</div>
+        </div>
+        </div>
+        <div class="bottomWrapper">
+          <el-carousel v-if="height" :height="height + 'px'" indicator-position="none">
+            <el-carousel-item v-for="item in 4" :key="item">
+              <div class="swiperBox">
+                <img :src="require('../../../assets/page1/test1.jpeg')" />
+                <p class="time">时间:2019-02-29 19:12:22</p>
+                <p class="time">设备:asdfasfdasfas号</p>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
         </div>
       </div>
       <div class="intoGid">
-        <div class="title color">设备类型统计</div>
+        <div class="title color">
+          <img :src="require('../../../assets/icons/type.svg')" alt="">
+          设备类型统计</div>
         <div class="bottomWrapper" id="deviceTypeData"></div>
       </div>
     </div>
     <div class="wrapper2 areaStyle">
       <div class="intoGid">
-        <div class="title color">设备总数</div>
+        <div class="title color">
+          <img :src="require('../../../assets/icons/suanfazongshu.svg')" alt="">
+
+          设备总数</div>
+        <div class="bottomWrapper" id="deviceTotal"></div>
       </div>
       <div class="intoGid">
-        <div class="title color">报警统计</div>
+        <div class="title color">
+          <img :src="require('../../../assets/icons/baojing.svg')" alt="">
+
+          报警统计</div>
         <div class="bottomWrapper" id="alarmData"></div>
       </div>
     </div>
     <div class="wrapper3 areaStyle">
       <div class="intoGid">
-        <div class="title color">设备在线状态</div>
+        <div class="title color">
+          <img :src="require('../../../assets/icons/zhuangtai.svg')" alt="">
+
+          设备在线状态</div>
+        <div class="bottomWrapper" id="deviceStatus"></div>
       </div>
       <div class="intoGid">
-        <div class="title color">更多报警</div>
+        <div class="title color">
+          <img :src="require('../../../assets/icons/xinxi.svg')" alt="">
+          更多报警</div>
         <div class="bottomWrapper">
           <el-carousel v-if="height" :height="height + 'px'" indicator-position="none">
             <el-carousel-item v-for="item in 4" :key="item">
@@ -68,12 +100,12 @@ export default {
   data() {
     return {
       height: 0,
-      // https://www.makeapie.cn/echarts_content/xvh81yeAKa.html
+      // 设备类型统计: https://www.makeapie.cn/echarts_content/xvh81yeAKa.html
       deviceTypeData: {
         xData: ["防外破监测", "视频监测", "图像检测", "布控球"],
         yData: [12, 1230, 425, 232]
       },
-      // https://www.makeapie.cn/echarts_content/x0oZWoncE.html
+      //报警统计: https://www.makeapie.cn/echarts_content/x0oZWoncE.html
       alarmData: {
         yData: [5000, 2600, 1300, 1300, 1250, 1500],
         xData: [
@@ -83,6 +115,24 @@ export default {
           "房地产",
           "金融业",
           "居民服务及其他"
+        ]
+      },
+      deviceTotal: [
+        {
+          value: 91,
+          name: "综合健康评分"
+        }
+      ],
+      deviceStatusData: {
+        data: [
+          {
+            name: "在线",
+            value: 40
+          },
+          {
+            name: "离线",
+            value: 80
+          }
         ]
       }
     };
@@ -94,6 +144,10 @@ export default {
       this.initdeviceType();
       // 报警统计-init
       this.initAlarm();
+      // 设备在线状态 - init
+      this.initDeviceStatus();
+      // 设备总数
+      this.initDeviceTotal();
     });
   },
   methods: {
@@ -102,6 +156,398 @@ export default {
       let dom = document.querySelector(".bottomWrapper");
       this.height = dom.offsetHeight - 10;
     },
+    // 设备总数 - init
+    initDeviceTotal() {
+      var myChart = echarts.init(document.getElementById("deviceTotal"));
+      myChart.setOption(this.getDeviceTotal());
+    },
+    // 设备总数 - option
+    getDeviceTotal() {
+      var color = new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+        {
+          offset: 0,
+          color: "#5CF9FE" // 0% 处的颜色
+        },
+        {
+          offset: 0.17,
+          color: "#468EFD" // 100% 处的颜色
+        },
+        {
+          offset: 0.9,
+          color: "#468EFD" // 100% 处的颜色
+        },
+        {
+          offset: 1,
+          color: "#5CF9FE" // 100% 处的颜色
+        }
+      ]);
+      var colorSet = [[0.91, color], [1, "#15337C"]];
+      var rich = {
+        white: {
+          fontSize: 20,
+          color: "#fff",
+          fontWeight: "500",
+          padding: [-150, 0, 0, 0]
+        },
+        bule: {
+          fontSize: 50,
+          fontFamily: "DINBold",
+          color: "#fff",
+          fontWeight: "700",
+          padding: [-120, 0, 0, 0]
+        },
+        radius: {
+          width: 350,
+          height: 80,
+          // lineHeight:80,
+          borderWidth: 1,
+          borderColor: "#0092F2",
+          fontSize: 20,
+          color: "#fff",
+          backgroundColor: "#1B215B",
+          borderRadius: 20,
+          textAlign: "center"
+        },
+        size: {
+          height: 400,
+          padding: [100, 0, 0, 0]
+        }
+      };
+      let option = {
+        tooltip: {
+          formatter: "{a} <br/>{b} : {c}%"
+        },
+
+        series: [
+          {
+            //内圆
+            type: "pie",
+            radius: "85%",
+            center: ["50%", "50%"],
+            z: 0,
+            itemStyle: {
+              normal: {
+                color: new echarts.graphic.RadialGradient(
+                  0.5,
+                  0.5,
+                  1,
+                  [
+                    {
+                      offset: 0,
+                      color: "rgba(17,24,43,0)"
+                    },
+                    {
+                      offset: 0.5,
+                      // color: '#1E2B57'
+                      color: "rgba(28,42,91,.6)"
+                    },
+                    {
+                      offset: 1,
+                      color: "#141C33"
+                      // color:'rgba(17,24,43,0)'
+                    }
+                  ],
+                  false
+                ),
+                label: {
+                  show: false
+                },
+                labelLine: {
+                  show: false
+                }
+              }
+            },
+            hoverAnimation: false,
+            label: {
+              show: false
+            },
+            tooltip: {
+              show: false
+            },
+            data: [100]
+          },
+          {
+            type: "gauge",
+            name: "外层辅助",
+            radius: "74%",
+            startAngle: "225",
+            endAngle: "-45",
+            splitNumber: "100",
+            pointer: {
+              show: false
+            },
+            detail: {
+              show: false
+            },
+            data: [
+              {
+                value: 1
+              }
+            ],
+            // data: [{value: 1, name: 90}],
+            title: {
+              show: true,
+              offsetCenter: [0, 30],
+              textStyle: {
+                color: "#fff",
+                fontStyle: "normal",
+                fontWeight: "normal",
+                fontFamily: "微软雅黑",
+                fontSize: 20
+              }
+            },
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: [[1, "#00FFFF"]],
+                width: 2,
+                opacity: 1
+              }
+            },
+            axisTick: {
+              show: false
+            },
+            splitLine: {
+              show: true,
+              length: 20,
+              lineStyle: {
+                color: "#051932",
+                width: 0,
+                type: "solid"
+              }
+            },
+            axisLabel: {
+              show: false
+            }
+          },
+          {
+            type: "gauge",
+            radius: "70%",
+            startAngle: "225",
+            endAngle: "-45",
+            pointer: {
+              show: false
+            },
+            detail: {
+              formatter: function(value) {
+                var num = Math.round(value);
+                return (
+                  "{bule|" +
+                  num +
+                  "}{white|个}" +
+                  "{size|" +
+                  "}\n{radius|综合健康评分}"
+                );
+              },
+              rich: rich,
+              offsetCenter: ["0%", "0%"]
+            },
+            data: this.deviceTotal,
+            title: {
+              show: false
+            },
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: colorSet,
+                width: 25,
+                // shadowBlur: 15,
+                // shadowColor: '#B0C4DE',
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                opacity: 1
+              }
+            },
+            axisTick: {
+              show: false
+            },
+            splitLine: {
+              show: false,
+              length: 25,
+              lineStyle: {
+                color: "#00377a",
+                width: 2,
+                type: "solid"
+              }
+            },
+            axisLabel: {
+              show: false
+            }
+          },
+          {
+            name: "灰色内圈", //刻度背景
+            type: "gauge",
+            z: 2,
+            radius: "60%",
+            startAngle: "225",
+            endAngle: "-45",
+            //center: ["50%", "75%"], //整体的位置设置
+            axisLine: {
+              // 坐标轴线
+              lineStyle: {
+                // 属性lineStyle控制线条样式
+                color: [[1, "#018DFF"]],
+                width: 2,
+                opacity: 1 //刻度背景宽度
+              }
+            },
+            splitLine: {
+              show: false
+            },
+            // data: [{
+            //     show: false,
+            //     value: '80'
+            // }], //作用不清楚
+            axisLabel: {
+              show: false
+            },
+            pointer: {
+              show: false
+            },
+            axisTick: {
+              show: false
+            },
+            detail: {
+              show: 0
+            }
+          },
+          {
+            name: "白色圈刻度",
+            type: "gauge",
+            radius: "60%",
+            startAngle: 225, //刻度起始
+            endAngle: -45, //刻度结束
+            z: 4,
+            axisTick: {
+              show: false
+            },
+            splitLine: {
+              length: 16, //刻度节点线长度
+              lineStyle: {
+                width: 2,
+                color: "rgba(1,244,255, 0.9)"
+              } //刻度节点线
+            },
+            axisLabel: {
+              color: "rgba(255,255,255,0)",
+              fontSize: 12
+            }, //刻度节点文字颜色
+            pointer: {
+              show: false
+            },
+            axisLine: {
+              lineStyle: {
+                opacity: 0
+              }
+            },
+            detail: {
+              show: false
+            },
+            data: [
+              {
+                value: 0,
+                name: ""
+              }
+            ]
+          },
+          {
+            //内圆
+            type: "pie",
+            radius: "56%",
+            center: ["50%", "50%"],
+            z: 1,
+            itemStyle: {
+              normal: {
+                color: new echarts.graphic.RadialGradient(
+                  0.5,
+                  0.5,
+                  0.8,
+                  [
+                    {
+                      offset: 0,
+                      color: "#4978EC"
+                    },
+                    {
+                      offset: 0.5,
+                      color: "#1E2B57"
+                    },
+                    {
+                      offset: 1,
+                      color: "#141F3D"
+                    }
+                  ],
+                  false
+                ),
+                label: {
+                  show: false
+                },
+                labelLine: {
+                  show: false
+                }
+              }
+            },
+            hoverAnimation: false,
+            label: {
+              show: false
+            },
+            tooltip: {
+              show: false
+            },
+            data: [100]
+          }
+        ]
+      };
+      return option;
+    },
+    // 设备在线状态 - init
+    initDeviceStatus() {
+      var myChart = echarts.init(document.getElementById("deviceStatus"));
+      myChart.setOption(this.getDeviceStatusData());
+    },
+    // 设备在线状态 - option
+    getDeviceStatusData() {
+      let option = {
+        title: false,
+        color: [
+          "#00E676",
+          "#F44336"
+          // "#ffdb5c",
+          // "#ff9f7f",
+          // "#fb7293",
+          // "#e7bcf3",
+          // "#8378ea"
+        ],
+        tooltip: {
+          trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        toolbox: {
+          show: false,
+          feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            magicType: {
+              show: true,
+              type: ["pie", "funnel"]
+            },
+            restore: { show: true },
+            saveAsImage: { show: true }
+          }
+        },
+        calculable: true,
+        series: [
+          {
+            name: "增值电信业务统计表",
+            type: "pie",
+            radius: [40, 70],
+            roseType: "area",
+            data: this.deviceStatusData.data
+          }
+        ]
+      };
+      return option;
+    },
+
     // 报警统计-init
     initAlarm() {
       var myChart = echarts.init(document.getElementById("alarmData"));
@@ -409,10 +855,17 @@ export default {
   .title {
     background-size: 100% 100%;
     background-position-y: 2vh;
+    padding-left: 15px;
     height: 4vh;
     font-size: 2.5vh;
     font-weight: bold;
     position: relative;
+    display: flex;
+    align-items: center;
+    img {
+      height: 50%;
+      margin-right: 15px;
+    }
     &::after {
       content: " ";
       position: absolute;
