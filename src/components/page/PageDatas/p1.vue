@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-28 23:35:46
+ * @LastEditTime: 2022-09-29 00:21:36
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -46,6 +46,17 @@
       </div>
       <div class="intoGid">
         <div class="title color">更多报警</div>
+        <div class="bottomWrapper">
+          <el-carousel v-if="height" :height="height + 'px'" indicator-position="none">
+            <el-carousel-item v-for="item in 4" :key="item">
+              <div class="swiperBox">
+                <img :src="require('../../../assets/page1/test1.jpeg')" />
+                <p class="time">时间:2019-02-29 19:12:22</p>
+                <p class="time">设备:asdfasfdasfas号</p>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
       </div>
     </div>
   </div>
@@ -78,6 +89,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.initHieght();
       // 设备类型统计-init
       this.initdeviceType();
       // 报警统计-init
@@ -85,6 +97,11 @@ export default {
     });
   },
   methods: {
+    // 初始化高度
+    initHieght() {
+      let dom = document.querySelector(".bottomWrapper");
+      this.height = dom.offsetHeight - 10;
+    },
     // 报警统计-init
     initAlarm() {
       var myChart = echarts.init(document.getElementById("alarmData"));
@@ -333,9 +350,9 @@ export default {
 .pageCOntainer {
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
   background: url("../../../assets/page1/bk.jpg") no-repeat;
   background-size: 100% 100%;
-  z-index: -1;
   position: relative;
   .flexx {
     display: flex;
@@ -345,6 +362,25 @@ export default {
   }
   .color {
     color: #0dfcff;
+  }
+  .swiperBox {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: #38b2e6;
+    border-radius: 5px;
+    overflow: hidden;
+    .time {
+      color: #fff;
+      padding: 0 10px;
+      padding-top: 5px;
+    }
+    img {
+      width: 100%;
+      flex: 1;
+      overflow: hidden;
+    }
   }
   .bottomWrapper {
     width: 100%;
