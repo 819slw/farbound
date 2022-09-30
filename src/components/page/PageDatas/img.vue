@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-30 00:17:54
+ * @LastEditTime: 2022-09-30 00:33:28
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -25,7 +25,7 @@
         </el-select>
       </div>
       <div class="deviceList">
-        <div class="item" v-for="a in deviceList" :key="a.deviceSerial">{{ a.deviceName }}</div>
+        <div @click="clickItemDevice(a)" class="item" v-for="a in deviceList" :key="a.deviceSerial">{{ a.deviceName }}</div>
       </div>
       </div>
       <div class="rightArea">
@@ -58,6 +58,9 @@ export default {
     this.initAllDepart();
   },
   methods: {
+    clickItemDevice(item) {
+      this.getimgList(item.deviceSerial);
+    },
     initAllDepart() {
       reqDepartList({
         depart_id: this.userInfo.depart_id
@@ -68,11 +71,11 @@ export default {
     },
     getimgList(id) {
       getimgList({
-        deviceSerial: id || this.depart,
+        deviceSerial: id,
         start: this.dateFormat(new Date().getTime() - 24 * 60 * 60 * 1000),
         end: this.dateFormat(new Date().getTime())
       }).then(res => {
-        this.imgList = res.data.list;
+        this.imgList = res.data.list.slice(0, 9);
       });
     },
     getDeviceList(id) {
@@ -134,17 +137,21 @@ export default {
     flex: 1;
     width: 100%;
     display: flex;
+    overflow: hidden;
     .leftArea {
       height: 100%;
       border-right: 1px solid #fff;
       width: 20%;
+      overflow: auto;
     }
     .rightArea {
       flex: 1;
+      max-height: 100%;
       img {
-        width: 24%;
-        margin-left: 1%;
-        margin-top: 16px;
+        width: 30%;
+        height: 30%;
+        margin-left: 2.5%;
+        margin-top: 2.5%;
         border-radius: 10px;
       }
     }
@@ -154,6 +161,7 @@ export default {
     .item {
       margin-top: 16px;
       border-bottom: 1px solid #fff;
+      cursor: pointer;
     }
   }
   .header {
