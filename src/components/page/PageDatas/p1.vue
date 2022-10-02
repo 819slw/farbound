@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-02 18:05:44
+ * @LastEditTime: 2022-10-02 22:15:15
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -65,7 +65,11 @@
           <el-carousel v-if="height" :height="height + 'px'" indicator-position="none">
             <el-carousel-item v-for="item in logImgs0" :key="item.id">
               <div class="swiperBox">
-                <img :src="item.detail[0].pic_url" />
+                <el-image
+                :src="item.detail[0].pic_url"
+                :preview-src-list="logImgs0.map(v => v.detail[0].pic_url)">
+              </el-image>
+                <!-- <img :src="item.detail[0].pic_url" /> -->
                 <p class="time">时间:{{ item.create_at }}</p>
                 <p class="time">设备:{{ item.deviceName }}</p>
               </div>
@@ -112,7 +116,13 @@
           <el-carousel v-if="height" :height="height + 'px'" indicator-position="none">
             <el-carousel-item v-for="item in logImgs1" :key="item.id">
               <div class="swiperBox">
-                <img :src="item.detail[0].pic_url" />
+
+                <el-image
+                :src="item.detail[0].pic_url"
+                :preview-src-list="logImgs1.map(v => v.detail[0].pic_url)">
+              </el-image>
+
+                <!-- <img :src="item.detail[0].pic_url" /> -->
                 <p class="time">时间:{{ item.create_at }}</p>
                 <p class="time">设备:{{ item.deviceName }}</p>
               </div>
@@ -344,7 +354,6 @@ export default {
     },
     // 初始化地图
     initMap() {
-      // mapInit
       YJ.on().then(() => {
         new YJ.YJEarth("mapInit");
         new YJ.Layer.GDWXImagery();
@@ -1008,16 +1017,19 @@ export default {
   }
   .backarrow {
     width: 20px;
-    height: 20px;
-    background: #fff;
+    height: 40px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background: #38b2e6;
     display: flex;
     justify-content: center;
     align-items: center;
     position: fixed;
     left: 0;
     top: 50%;
-    color: #000;
+    color: #fff;
     z-index: 9999;
+    cursor: pointer;
   }
 
   .flexx {

@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-06 17:49:16
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-30 14:54:08
+ * @LastEditTime: 2022-10-02 18:58:48
  * @FilePath: /farbound/src/router/index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -16,7 +16,7 @@ export default new Router({
   routes: [
     {
       path: "/",
-      redirect: "/fristPage"
+      redirect: "/index"
     },
     {
       path: "/fristPage",

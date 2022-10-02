@@ -91,6 +91,14 @@
       </el-table-column>
 
 
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+        </template>
+      </el-table-column>
+
       <!--      <el-table-column
               label="操作"
               width="220"
@@ -136,119 +144,212 @@
       <!--    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
       <!--  </span>-->
     </el-dialog>
+
+
+    <!-- 更新 -->
+    <el-dialog
+  title="编辑"
+  :visible.sync="dialogVisibleEdit"
+  width="40%"
+  :before-close="handleClose">
+
+  <el-form ref="forms" :model="form" :rules="rules" label-width="150px">
+    <el-form-item label="经度" required prop="lng">
+      <el-input v-model="form.lng"></el-input>
+    </el-form-item>
+
+
+    <el-form-item label="纬度" required prop="lat">
+      <el-input v-model="form.lat"></el-input>
+    </el-form-item>
+
+    <el-form-item label="设备序列号" required prop="deviceSerial">
+      <el-input v-model="form.deviceSerial"></el-input>
+    </el-form-item>
+
+
+    <el-form-item label="隶属部门" required prop="depart_id">
+      <el-select v-model="form.depart_id" placeholder="请选择部门">
+        <el-option v-for="a in departList" :key="a.id" :label="a.depart_id" :value="a.depart_name"></el-option>
+      </el-select>
+    </el-form-item>
+
+    <el-form-item>
+      <el-button type="primary" @click="onSubmit">确定</el-button>
+      <el-button @click="handleClose">取消</el-button>
+    </el-form-item>
+  </el-form>
+
+
+
+</el-dialog>
   </div>
 </template>
 
 <script>
 //引入定义ajax请求方法
 import {
-  reqDeviceList, reqPresetAdd, updateDevicename
-} from "../../../api"
+  reqDeviceList,
+  reqPresetAdd,
+  updateDevicename,
+  updateLocation,
+  moveDevice,
+  reqDepartList
+} from "../../../api";
 import preview from "./preview";
 import lunxun from "./lunxun";
 
 export default {
   name: "Table",
-  components: {preview, lunxun},
+  components: { preview, lunxun },
   data() {
     return {
+      rules: {
+        lng: [{ required: true, message: "内容不能为空", trigger: "change" }],
+        lat: [{ required: true, message: "内容不能为空", trigger: "change" }],
+        deviceSerial: [
+          { required: true, message: "内容不能为空", trigger: "change" }
+        ],
+        depart_id: [
+          { required: true, message: "内容不能为空", trigger: "change" }
+        ]
+      },
+      departList: [],
       currentPage: 1,
       pagesize: 10,
       infos: [],
       infos2: new Map(),
       infos_length: 0,
-      search: '',
+      search: "",
       userInfo: null,
-      openVideo: false,//打开视频预览页面
-      dialogVisible: false,//打开视频预览页面
-      previewTitle: "",//打开视频预览页面
-      device: {},//当前预览的device
+      openVideo: false, //打开视频预览页面
+      dialogVisible: false, //打开视频预览页面
+      previewTitle: "", //打开视频预览页面
+      device: {}, //当前预览的device
       closePlayerCallback: null,
       multipleSelection: [],
-      play: false
-
-    }
+      play: false,
+      dialogVisibleEdit: false,
+      form: {
+        lng: "",
+        lat: "",
+        deviceSerial: "",
+        depart_id: ""
+      }
+    };
   },
   filters: {
     filterStatus(val) {
       if (val == 1) {
-        return '在线'
+        return "在线";
       } else {
-        return '离线'
+        return "离线";
       }
     }
   },
   mounted() {
-    this.userInfo = JSON.parse(localStorage.getItem('user'))
-    this.getDevice()
+    this.userInfo = JSON.parse(localStorage.getItem("user"));
+    this.getDevice();
+    this.initpartList();
   },
   watch: {
     search(newVal) {
       this.handleSearch(newVal);
-    },
+    }
   },
   methods: {
+    initpartList() {
+      reqDepartList({
+        depart_id: this.userInfo.depart_id
+      }).then(res => {
+        console.log(res);
+        console.log("res");
+        this.departList = res.data;
+      });
+    },
+    handleClose() {
+      this.dialogVisibleEdit = false;
+    },
+    onSubmit() {
+      this.$refs.forms.validate(valid => {
+        console.log(valid);
+        if (valid) {
+          updateLocation(this.form).then(res => {
+            moveDevice(this.form).then(el => {
+              this.$message.success("更新成功");
+              this.dialogVisibleEdit = false;
+            });
+          });
+        }
+      });
+    },
+    handleEdit(index, row) {
+      this.form = { ...row };
+      this.dialogVisibleEdit = true;
+      console.log(index, row);
+    },
     lunxun() {
-      this.play = true
+      this.play = true;
     },
     onplayClose() {
-      this.play = false
+      this.play = false;
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(this.multipleSelection)
+      console.log(this.multipleSelection);
     },
     updateDeviceName(row) {
-      this.$prompt('请输入设备名称', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$prompt("请输入设备名称", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
         inputValue: row.deviceName || ""
-      }).then(({value}) => {
-        value = value.trim()
-        if (value) {
-          let {deviceSerial,} = row
-          updateDevicename({deviceSerial, deviceName: value}).then(rsp => {
-
-            if (rsp.code == 200) {
-              row.deviceName = value
-              this.$message.success(rsp.msg)
-            } else
-              this.$message.error(rsp.msg)
-          })
-        } else {
-          this.$message.warning("请输入设备名称")
-        }
-      }).catch(() => {
-
-      });
+      })
+        .then(({ value }) => {
+          value = value.trim();
+          if (value) {
+            let { deviceSerial } = row;
+            updateDevicename({ deviceSerial, deviceName: value }).then(rsp => {
+              if (rsp.code == 200) {
+                row.deviceName = value;
+                this.$message.success(rsp.msg);
+              } else this.$message.error(rsp.msg);
+            });
+          } else {
+            this.$message.warning("请输入设备名称");
+          }
+        })
+        .catch(() => {});
     },
     onClose(done) {
       if (this.closePlayerCallback) {
-        this.closePlayerCallback().then(rsp => {
-          done()
-        }).catch(e => {
-          done()
-        })
+        this.closePlayerCallback()
+          .then(rsp => {
+            done();
+          })
+          .catch(e => {
+            done();
+          });
       }
 
       // this.dialogVisible = false
     },
     getRow() {
-      return this.device
+      return this.device;
     },
-    closePlayer() {
-
-    },
+    closePlayer() {},
 
     preview(row) {
-      this.previewTitle = row.deviceName
-      this.device = row
-      this.dialogVisible = true
+      let item = row;
+      this.$router.push(
+        `/deviceDetail?deviceName=${item.deviceName}&deviceSerial=${
+          item.deviceSerial
+        }&lat=${item.lat}&lng=${item.lng}`
+      );
     },
     //获取设备列表
     getDevice() {
-      reqDeviceList({depart_id: this.userInfo.depart_id}).then(res => {
-        console.log(res)
+      reqDeviceList({ depart_id: this.userInfo.depart_id }).then(res => {
+        console.log(res);
         if (res.code == 200 || res.code == 0) {
           this.infos = res.data;
           this.infos2.set(1, res.data);
@@ -258,9 +359,8 @@ export default {
     },
     intoMuseum() {
       if (this.multipleSelection.length) {
-
       } else {
-        this.$message.warning("请选择设备")
+        this.$message.warning("请选择设备");
       }
       // this.$prompt('请输入', '添加设备预置点', {
       //   confirmButtonText: '确定',
@@ -280,8 +380,9 @@ export default {
       if (search != "") {
         //如果search不等于空
         this.infos = this.infos.filter(
-          (data) =>
-            !search || data.deviceName.toLowerCase().includes(search.toLowerCase())
+          data =>
+            !search ||
+            data.deviceName.toLowerCase().includes(search.toLowerCase())
         );
         this.infos_length = this.infos.length;
       }
@@ -292,14 +393,12 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-    },
+    }
   }
-}
+};
 </script>
 
 <style scoped lang="less">
-
-
 .el-form {
   padding: 0 10px;
   margin-top: 10px;
@@ -321,7 +420,6 @@ export default {
   width: 100%;
 }
 
-
 .demo-input-suffix span {
   width: 20%;
 }
@@ -329,5 +427,4 @@ export default {
 .el-input {
   //margin-top: 10px;
 }
-
 </style>
