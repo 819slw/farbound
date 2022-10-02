@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-29 22:59:08
+ * @LastEditTime: 2022-10-02 18:05:44
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -12,31 +12,35 @@
       智慧线路管控平台
     </div>
 
+    <div class="backarrow" @click="backarrow">
+      >
+    </div>
+
     <!-- 地图 -->
     <div class="mapArea">
       <div class="selectArea">
-        <el-select v-model="partVal" placeholder="所有部分">
+        <el-select v-model="partVal" placeholder="所有部门">
           <el-option
             v-for="item in partArr"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item.depart_id"
+            :label="item.depart_name"
+            :value="item.depart_id">
           </el-option>
         </el-select>
         <el-select v-model="levelVal" placeholder="所有电压等级">
           <el-option
             v-for="item in levelArr"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item"
+            :label="item"
+            :value="item">
           </el-option>
         </el-select>
         <el-select v-model="deviceVal" placeholder="所有设备">
           <el-option
             v-for="item in deviceArr"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item.deviceSerial"
+            :label="item.deviceName"
+            :value="item.deviceSerial">
           </el-option>
         </el-select>
       </div>
@@ -101,7 +105,7 @@
         <div class="bottomWrapper" id="deviceStatus"></div>
       </div>
       <div class="intoGid">
-        <div class="title color">
+        <div class="title color" @click="moreAlarm">
           <img :src="require('../../../assets/icons/xinxi.svg')" alt="">
           更多报警</div>
         <div class="bottomWrapper">
@@ -117,18 +121,39 @@
         </div>
       </div>
     </div>
+
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible1"
+      width="50%">
+
+      <div slot="title" class="dialog-title">
+        <span class="titleType">{{ mapPoint.deviceName }}</span>
+        <el-button @click="goDetail">查看详情</el-button>
+      </div>
+
+    <div class="imgListDialog">
+      <div class="backPlayerEntity" id="backPlayerEntity"></div>
+    </div>
+    </el-dialog>
+
+
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
+import EZUIKit from "ezuikit-js";
+
 import { reqDeviceList, getLogList, reqDepartList } from "@/api/index";
 export default {
   data() {
     return {
+      dialogVisible1: false,
+      mapPoint: {},
       height: 0,
       partArr: [],
-      levelArr: [],
+      levelArr: ["750kV", "500kV", "330kV", "220kV", "110kV35kV", "10kV"],
       deviceArr: [],
       partVal: "",
       levelVal: "",
@@ -136,6 +161,7 @@ export default {
       logImgs0: [],
       userInfo: {},
       logImgs1: [],
+      BillboardObject: null,
       // 设备类型统计: https://www.makeapie.cn/echarts_content/xvh81yeAKa.html
       deviceTypeData: {
         xData: ["防外破监测", "视频监测", "图像检测", "布控球"],
@@ -174,6 +200,11 @@ export default {
       }
     };
   },
+  watch: {
+    partVal(o) {
+      this.initDeviceList(o);
+    }
+  },
   mounted() {
     this.userInfo = JSON.parse(localStorage.getItem("user"));
     console.log(this.userInfo);
@@ -183,16 +214,22 @@ export default {
       this.initdeviceType();
       // 报警统计-init
       this.initAlarm();
-      // 接口 设备列表
-      this.initDeviceList();
       // 初始化地图
       this.initMap();
+
       // 初始化swiper 0 + 1
       this.initLogList0();
       this.initLogList1();
+      this.initAllDepart();
     });
   },
   methods: {
+    backarrow() {
+      this.$router.push("/index");
+    },
+    moreAlarm() {
+      this.$router.push("/alarmImg");
+    },
     videoInto() {
       this.$router.push("/video");
     },
@@ -219,10 +256,11 @@ export default {
         this.logImgs1 = res.data.list;
       });
     },
-    initDeviceList() {
+    initDeviceList(id) {
       reqDeviceList({
-        depart_id: this.userInfo.depart_id
+        depart_id: id || this.userInfo.depart_id
       }).then(res => {
+        this.deviceArr = res.data;
         let arr = res.data;
         this.deviceStatusData.data[0].value = arr.filter(
           v => v.status == 1
@@ -237,20 +275,84 @@ export default {
         this.deviceTotal[0].value = arr.length;
         // 设备总数
         this.initDeviceTotal();
+
+        // 初始化所有标注点
+        this.initAllPoint();
       });
+    },
+    initAllPoint() {
+      this.deviceArr.forEach(v => {
+        // this.BillboardObject
+        let entity = new YJ.Obj.BillboardObject({
+          id: v.deviceSerial,
+          position: {
+            lng: v.lng,
+            lat: v.lat,
+            alt: 0
+          },
+          billboard: {
+            image: require("../../../assets/page1/location_fill.png")
+          },
+          scaleByDistance: false,
+          label: {
+            text: v.deviceName,
+            color: "#fff"
+          }
+        });
+        entity.onClick = (e, id) => {
+          // this.dialogVisible1 = true;
+          let obj = this.deviceArr.find(v => v.deviceSerial == id);
+          this.mapPoint = obj;
+          this.goDetail();
+          // this.$nextTick(() => {
+          //   let dom = document.querySelector("#backPlayerEntity");
+          //   let width = dom.offsetWidth;
+          //   let height = dom.offsetHeight;
+          //   let entity1 = new EZUIKit.EZUIKitPlayer({
+          //     id: "backPlayerEntity", // 视频容器ID
+          //     accessToken: this.token,
+          //     template: "2ccb62e662de445d9d67e5f0e57af6e1",
+          //     url: "ezopen://open.ys7.com/" + obj.deviceSerial + "/1.hd.live",
+          //     height,
+          //     width
+          //   });
+          // });
+
+          entity.flyTo();
+        };
+      });
+    },
+    goDetail() {
+      let item = this.mapPoint;
+      this.$router.push(
+        `/deviceDetail?deviceName=${item.deviceName}&deviceSerial=${
+          item.deviceSerial
+        }&lat=${item.lat}&lng=${item.lng}`
+      );
     },
     // 初始化高度
     initHieght() {
       let dom = document.querySelector(".bottomWrapper");
       this.height = dom.offsetHeight - 10;
     },
+    initAllDepart() {
+      reqDepartList({
+        depart_id: this.userInfo.depart_id
+      }).then(res => {
+        this.partArr = res.data;
+      });
+    },
     // 初始化地图
     initMap() {
       // mapInit
-      // YJ.on().then(() => {
-      //   new YJ.YJEarth("mapInit");
-      //   new YJ.Layer.GDWXImagery();
-      // });
+      YJ.on().then(() => {
+        new YJ.YJEarth("mapInit");
+        new YJ.Layer.GDWXImagery();
+        new YJ.Layer.GDLWImagery();
+        //所有关于地球的操作  都需要在这后面进行
+        // 接口 设备列表
+        this.initDeviceList();
+      });
     },
     // 设备总数 - init
     initDeviceTotal() {
@@ -896,6 +998,28 @@ export default {
   background: url("../../../assets/page1/bk.jpg") no-repeat;
   background-size: 100% 100%;
   position: relative;
+  .backPlayerEntity {
+    height: 50vh;
+  }
+  .titleType {
+    color: #fff;
+    font-weight: bold;
+    margin-right: auto;
+  }
+  .backarrow {
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    top: 50%;
+    color: #000;
+    z-index: 9999;
+  }
+
   .flexx {
     display: flex;
     flex-direction: unset !important;
@@ -983,6 +1107,7 @@ export default {
     display: flex;
     flex-direction: column;
     .mapInit {
+      max-height: 90vh;
       flex: 1;
     }
     .selectArea {

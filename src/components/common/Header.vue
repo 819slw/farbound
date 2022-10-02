@@ -5,9 +5,9 @@
       <i class="el-icon-menu"></i>
     </span>
     <!-- 系统标题 -->
-    <h3 class="header-title margin-l-10">电网精灵</h3>
+    <h3 class="header-title margin-l-10">智慧线路管控平台</h3>
     <div class="header-right">
-      <img class="header-portrait" src="../../assets/img/logo.jpg" alt="logo">
+      <!-- <img class="header-portrait" src="../../assets/img/logo.jpg" alt="logo"> -->
       <!-- 用户名下拉菜单 -->
       <el-dropdown @command="handleCommand">
         <span class="el-dropdown-link">
@@ -23,37 +23,37 @@
 </template>
 
 <script>
-import Bus from './bus';
+import Bus from "./bus";
 
 export default {
   name: "Header",
   data() {
     return {
       message: 1,
-      username: JSON.parse(localStorage.getItem('user')).nick_name,
+      username: JSON.parse(localStorage.getItem("user")).nick_name,
       collapse: false
-    }
+    };
   },
   methods: {
     // 侧边栏折叠打开效果
     collapseChage() {
       this.collapse = !this.collapse;
-      Bus.$emit('collapse', this.collapse);
+      Bus.$emit("collapse", this.collapse);
     },
     // 用户名下拉菜单选择事件
     handleCommand(command) {
-      if ('loginout' == command) {
+      if ("loginout" == command) {
         //清空存储在本地的数据
-        localStorage.removeItem('user');
-        this.$router.push('/login');
+        localStorage.removeItem("user");
+        this.$router.push("/login");
       }
     }
   }
-}
+};
 </script>
 
 <style scoped lang="less">
-[class*='el-icon'] {
+[class*="el-icon"] {
   cursor: pointer;
 }
 
@@ -66,11 +66,14 @@ export default {
   line-height: 53px;
 }
 
-.header-title, .btn-info {
+.header-title,
+.btn-info {
   display: inline-block;
 }
 
-.header-title, .btn-collapse, .el-icon-bell {
+.header-title,
+.btn-collapse,
+.el-icon-bell {
   font-size: 25px;
 }
 

@@ -36,35 +36,40 @@ export default {
       isCollapse: false,
       items: [
         {
-          title: '用户',
-          path: '/index',
-          icon: 'el-icon-setting',
+          title: "用户",
+          path: "/index",
+          icon: "el-icon-setting",
           subItems: [
             {
-              title: '用户列表',
-              path: '/index'
-            }, {
-              title: '部门管理',
-              path: '/part'
+              title: "用户列表",
+              path: "/index"
             },
+            {
+              title: "部门管理",
+              path: "/part"
+            }
           ]
         },
         {
-          title: '设备',
-          path: '/device',
-          icon: 'el-icon-setting',
+          title: "设备",
+          path: "/device",
+          icon: "el-icon-setting",
           subItems: [
             {
-              title: '设备列表',
-              path: '/device'
-            }, /*{
+              title: "设备列表",
+              path: "/device"
+            },
+            {
+              title: "设备主页",
+              path: "/fristPage"
+            } /*{
               title: '轮询播放',
               path: '/lunxun1'
             },*/
           ]
         }
       ]
-    }
+    };
   },
   computed: {
     onRoutes() {
@@ -78,11 +83,11 @@ export default {
   },
   created() {
     // 通过 event bus进行组件间的通信 来折叠和展开侧边栏
-    Bus.$on('collapse', isCollapse => {
+    Bus.$on("collapse", isCollapse => {
       this.isCollapse = isCollapse;
     });
   }
-}
+};
 </script>
 
 <style scoped lang="less">

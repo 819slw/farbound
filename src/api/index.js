@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-14 11:17:12
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-09-29 23:59:53
+ * @LastEditTime: 2022-10-01 00:34:16
  * @FilePath: /farbound/src/api/index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -60,7 +60,7 @@ export const getLogList = data =>
   ajax(BASE_URL + "/api/v1/mobile/log/list", data, "POST");
 
 // 图片 getLogList
-export const getimgList = data =>
+export const getLogByDeviceSerialWithTime = data =>
   ajax(
     BASE_URL + "/api/v1/mobile/log/getLogByDeviceSerialWithTime",
     data,
@@ -70,3 +70,33 @@ export const getimgList = data =>
 // 设备列表
 export const getdeviceList = data =>
   ajax(BASE_URL + "/api/v1/mobile/device/list", data, "POST");
+
+// 设备列表
+export const getAlarmByDeviceSerialWithTime = data =>
+  ajax(
+    BASE_URL + "/api/v1/mobile/log/getAlarmByDeviceSerialWithTime",
+    data,
+    "POST"
+  );
+
+export const reqPtzStart = data =>
+  ajax(BASE_URL + "/api/v1/mobile/device/ptz/start", data, "POST");
+// 停止操作
+export const reqPtzStop = data =>
+  ajax(BASE_URL + "/api/v1/mobile/device/ptz/stop", data, "POST");
+
+// 停止操作
+export const presetListInterface = data =>
+  ajax(BASE_URL + "/api/v1/mobile/device/preset/list", data, "POST");
+
+// 停止操作
+export const addDevicePreset = data =>
+  ajax(BASE_URL + "/api/v1/mobile/device/preset/add", data, "POST");
+
+// 停止操作
+export const delDevicePreset = data =>
+  ajax(BASE_URL + "/api/v1/mobile/device/preset/del", data, "POST");
+
+// 停止操作
+export const moveDevicePreset = data =>
+  ajax(BASE_URL + "/api/v1/mobile/device/preset/move", data, "POST");

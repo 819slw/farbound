@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-02 18:09:56
+ * @LastEditTime: 2022-10-02 18:06:47
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -46,7 +46,7 @@
       </div>
       <div class="rightArea">
         <img :src="el.detail[0].pic_url" v-for="el in imgList" :key="el.id" alt="">
-        <div class="emptyBox">
+        <div class="emptyBox" v-if="!imgList || imgList.length == 0">
           暂无数据
           <!-- <el-empty v-if="!imgList || imgList.length == 0" description="暂无数据"></el-empty> -->
         </div>
@@ -58,7 +58,7 @@
 <script>
 import {
   getdeviceList,
-  getLogByDeviceSerialWithTime,
+  getAlarmByDeviceSerialWithTime,
   reqDepartList
 } from "@/api/index";
 
@@ -103,7 +103,7 @@ export default {
       });
     },
     getimgList(id) {
-      getLogByDeviceSerialWithTime({
+      getAlarmByDeviceSerialWithTime({
         deviceSerial: id || this.deviceList[this.active].deviceSerial,
         start:
           (this.timeInfo &&
