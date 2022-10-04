@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-02 22:15:15
+ * @LastEditTime: 2022-10-04 12:46:54
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -163,7 +163,7 @@ export default {
       mapPoint: {},
       height: 0,
       partArr: [],
-      levelArr: ["750kV", "500kV", "330kV", "220kV", "110kV35kV", "10kV"],
+      levelArr: ["750kV", "500kV", "330kV", "220kV", "110kV", "35kV", "10kV"],
       deviceArr: [],
       partVal: "",
       levelVal: "",
@@ -744,7 +744,7 @@ export default {
         calculable: true,
         series: [
           {
-            name: "增值电信业务统计表",
+            name: "设备在线状态",
             type: "pie",
             radius: [40, 70],
             roseType: "area",

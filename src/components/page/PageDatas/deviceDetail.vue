@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-02 18:09:24
+ * @LastEditTime: 2022-10-04 12:49:47
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -35,7 +35,7 @@
 
           <el-image
           :src="a.detail[0].pic_url" v-for="a in logList.slice(0,2)" :key="a.id"
-          :preview-src-list="logList">
+          :preview-src-list="logList.map(v => v.detail[0].pic_url)">
         </el-image>
           <div class="emptyBox" v-if="logList.length == 0">
             暂无数据
@@ -47,7 +47,7 @@
 
           <el-image
           :src="a.detail[0].pic_url" v-for="a in alarmList.slice(0,2)" :key="a.id"
-          :preview-src-list="alarmList">
+          :preview-src-list="alarmList.map(v => v.detail[0].pic_url)">
         </el-image>
           <div class="emptyBox" v-if="alarmList.length == 0">
             暂无数据
@@ -331,7 +331,7 @@ export default {
         a = undefined;
       }
       moveDevicePreset({
-        preset_index: a || this.presetVal,
+        preset_index: a == 0 ? a : a || this.presetVal,
         deviceSerial: this.$route.query.deviceSerial
       }).then(res => {
         this.$message.success("调用成功");
@@ -348,8 +348,7 @@ export default {
       });
     },
     onKeydown(item) {
-      console.log(item);
-      if (item.direction == 0) {
+      if (item.direction == 0 && item.name == "雨刮") {
         this.usePreset(1);
         return;
       }
@@ -736,6 +735,7 @@ export default {
       font-size: 20px;
       padding: 10px;
       font-weight: bold;
+      cursor: pointer;
     }
   }
   .title {
