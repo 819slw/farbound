@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2021-08-16 16:58:08
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-02 22:09:10
+ * @LastEditTime: 2022-10-13 00:15:19
  * @FilePath: /farbound/src/App.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -50,7 +50,22 @@ body,
   width: 100%;
   height: 100%;
 }
-
+#deviceArea-deviceName-content {
+  max-width: 500px !important;
+  min-width: 250px;
+}
+#player1-deviceName-content,
+#player2-deviceName-content,
+#player3-deviceName-content,
+#player4-deviceName-content,
+#player5-deviceName-content,
+#player6-deviceName-content,
+#player8-deviceName-content,
+#player9-deviceName-content,
+#player7-deviceName-content {
+  max-width: 500px !important;
+  min-width: 250px;
+}
 .el-tab-pane,
 .el-table tr {
   background-color: @boxBgColor;
