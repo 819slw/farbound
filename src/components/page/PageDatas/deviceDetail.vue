@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-04 12:49:47
+ * @LastEditTime: 2022-10-13 00:08:45
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -55,7 +55,9 @@
           </div>
         </div>
       </div>
-      <div class="rightArea" id="deviceArea"></div>
+      <div class="rightArea" @dblclick="dbclickHandle">
+        <div style="width:100%" id="deviceArea"></div>
+      </div>
       <div class="leftArea">
         <p class="title">设备操控</p>
         <div class="btnList">
@@ -288,6 +290,9 @@ export default {
     this.initAlarmList();
   },
   methods: {
+    dbclickHandle() {
+      this.palyer.fullScreen();
+    },
     callbackPlayerHandler() {
       let dom = document.querySelector("#backPlayerEntity");
       let width = dom.offsetWidth;

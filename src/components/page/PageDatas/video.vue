@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-02 15:15:08
+ * @LastEditTime: 2022-10-13 00:06:13
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -76,7 +76,7 @@
         </div>
       </div>
       <div class="rightArea" v-if="isPlayer">
-        <div :class="[positionStyle[potionVal]]" class="commonStyle" v-for="(el,i) in palyerList" :key="i">
+        <div :class="[positionStyle[potionVal]]" class="commonStyle" v-for="(el,i) in palyerList" :key="i" @dblclick="dbclickHandle(el,i)">
           <div :id="el.id"></div>
         </div>
       </div>
@@ -190,7 +190,7 @@ export default {
       setTimeout(() => {
         this.isPlayer = true;
         this.$nextTick(() => {
-          clearInterval(this.timer);
+          this.initSettimeout();
           this.setPlayerNumber();
         });
       }, 1000);
@@ -204,6 +204,9 @@ export default {
     this.initSettimeout();
   },
   methods: {
+    dbclickHandle(obj, i) {
+      obj.entity.fullScreen();
+    },
     initSettimeout() {
       clearInterval(this.timer);
       this.timer = setInterval(() => {

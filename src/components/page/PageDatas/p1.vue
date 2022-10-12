@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-04 12:46:54
+ * @LastEditTime: 2022-10-12 23:33:30
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -66,6 +66,7 @@
             <el-carousel-item v-for="item in logImgs0" :key="item.id">
               <div class="swiperBox">
                 <el-image
+                @click="setTitle(item)"
                 :src="item.detail[0].pic_url"
                 :preview-src-list="logImgs0.map(v => v.detail[0].pic_url)">
               </el-image>
@@ -116,8 +117,8 @@
           <el-carousel v-if="height" :height="height + 'px'" indicator-position="none">
             <el-carousel-item v-for="item in logImgs1" :key="item.id">
               <div class="swiperBox">
-
                 <el-image
+                @click="setTitle(item)"
                 :src="item.detail[0].pic_url"
                 :preview-src-list="logImgs1.map(v => v.detail[0].pic_url)">
               </el-image>
@@ -146,8 +147,6 @@
       <div class="backPlayerEntity" id="backPlayerEntity"></div>
     </div>
     </el-dialog>
-
-
   </div>
 </template>
 
@@ -159,6 +158,7 @@ import { reqDeviceList, getLogList, reqDepartList } from "@/api/index";
 export default {
   data() {
     return {
+      bigTitle: "",
       dialogVisible1: false,
       mapPoint: {},
       height: 0,
@@ -234,6 +234,21 @@ export default {
     });
   },
   methods: {
+    setTitle(obj) {
+      let domDiv = document.createElement("div");
+      domDiv.id = "bigTitle";
+      domDiv.innerText = obj.deviceName;
+      domDiv.style.position = "fixed";
+      domDiv.style.top = "0";
+      domDiv.style.left = "10px";
+      domDiv.style.color = "#fff";
+      domDiv.style.fontSize = "25px";
+      this.$nextTick(() => {
+        let dom = document.querySelector(".el-image-viewer__wrapper");
+        console.log(dom);
+        dom.appendChild(domDiv);
+      });
+    },
     backarrow() {
       this.$router.push("/index");
     },
@@ -1000,6 +1015,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ #bigTitle {
+  color: #fff;
+  top: 50px;
+  transform: translate(-50%, -50%);
+  position: fixed;
+}
 .pageCOntainer {
   width: 100vw;
   height: 100vh;
