@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-16 19:56:55
+ * @LastEditTime: 2022-10-16 19:59:40
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -239,8 +239,8 @@ export default {
       domDiv.id = "bigTitle";
       domDiv.innerText = obj.deviceName;
       domDiv.style.position = "fixed";
-      domDiv.style.top = "0";
-      domDiv.style.left = "10px";
+      domDiv.style.bottom = "130px";
+      domDiv.style.right = "20%";
       domDiv.style.color = "#fff";
       domDiv.style.fontSize = "25px";
       this.$nextTick(() => {
