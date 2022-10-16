@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-13 00:06:13
+ * @LastEditTime: 2022-10-16 19:01:13
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -96,6 +96,7 @@ export default {
     return {
       isPlayer: true,
       token: "",
+      deviceListOnline: [],
       timeVal: 1000 * 30,
       positionStyle: {
         "2x2": "foreGrid",
@@ -259,13 +260,23 @@ export default {
     setPlayerNumber() {
       this.clearAllEntity();
       let num = this.positionStyleNumber[this.potionVal];
-      let playerArr = [...this.deviceList].splice(this.num, num);
+      let playerArr = [];
+      if (this.num + num > this.deviceListOnline.length - 1) {
+        let diff = this.deviceListOnline.length - this.num;
+        playerArr = [...this.deviceListOnline].splice(this.num, diff);
+        playerArr = [
+          ...playerArr,
+          ...[...this.deviceListOnline].splice(0, num - diff)
+        ];
+        this.num = num - diff;
+      } else {
+        playerArr = [...this.deviceListOnline].splice(this.num, num);
+        this.num += num;
+      }
       this.activeList = playerArr.map(v => v.deviceSerial);
       playerArr.forEach((v, i) => {
         this.createPlayer(v.deviceSerial, i);
       });
-      // this.deviceList = [...this.deviceList, ...playerArr];
-      this.num += num;
     },
     getDeviceList(id) {
       getdeviceList({
@@ -273,6 +284,7 @@ export default {
       }).then(res => {
         this.num += 0;
         this.deviceList = res.data.list;
+        this.deviceListOnline = res.data.list.filter(v => v.status == 1);
         this.setPlayerNumber();
       });
     }
