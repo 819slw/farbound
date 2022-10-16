@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-16 19:59:40
+ * @LastEditTime: 2022-10-16 20:17:54
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -225,7 +225,7 @@ export default {
       // 报警统计-init
       this.initAlarm();
       // 初始化地图
-      // this.initMap();
+      this.initMap();
 
       // 初始化swiper 0 + 1
       this.initLogList0();

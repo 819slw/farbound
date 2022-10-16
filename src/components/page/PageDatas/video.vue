@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-16 19:48:59
+ * @LastEditTime: 2022-10-16 20:16:55
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -77,6 +77,7 @@
       </div>
       <div class="rightArea" v-if="isPlayer">
         <div :class="[positionStyle[potionVal]]" class="commonStyle" v-for="(el,i) in palyerList" :key="i" @dblclick="dbclickHandle(el,i)">
+          <div class="devicename">{{ el.name }}</div>
           <div :id="el.id"></div>
         </div>
       </div>
@@ -248,12 +249,13 @@ export default {
         v.entity = null;
       });
     },
-    createPlayer(deviceSerial, index) {
+    createPlayer(deviceSerial, index, name) {
       let dom = document.querySelector(
         `.${this.positionStyle[this.potionVal]}`
       );
       let width = dom.offsetWidth;
       let height = dom.offsetHeight;
+      this.palyerList[index].name = name;
       this.palyerList[index].entity = new EZUIKit.EZUIKitPlayer({
         id: this.palyerList[index].id, // 视频容器ID
         accessToken: this.token,
@@ -281,7 +283,7 @@ export default {
       }
       this.activeList = playerArr.map(v => v.deviceSerial);
       playerArr.forEach((v, i) => {
-        this.createPlayer(v.deviceSerial, i);
+        this.createPlayer(v.deviceSerial, i, v.deviceName);
       });
     },
     getDeviceList(id) {
@@ -418,6 +420,18 @@ export default {
       box-sizing: border-box;
       border-bottom: 1px solid #fff;
       border-right: 1px solid #fff;
+      position: relative;
+      .devicename {
+        color: #999;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        font-size: 14px;
+        padding: 4px 10px;
+        background: #fff;
+        border-radius: 8px;
+        z-index: 9999;
+      }
     }
     .foreGrid {
       width: 50%;
