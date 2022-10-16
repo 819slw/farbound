@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-16 19:01:13
+ * @LastEditTime: 2022-10-16 19:48:59
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -197,12 +197,14 @@ export default {
       }, 1000);
     }
   },
-  async created() {
+  async mounted() {
     this.userInfo = JSON.parse(localStorage.getItem("user"));
     let res = await getToken();
     this.token = res.data.token;
-    this.initAllDepart();
-    this.initSettimeout();
+    this.$nextTick(() => {
+      this.initAllDepart();
+      this.initSettimeout();
+    });
   },
   methods: {
     dbclickHandle(obj, i) {
@@ -226,7 +228,11 @@ export default {
       );
     },
     back() {
-      this.$router.go(-1);
+      this.$message.info("正在关闭视频通道，2秒后返回");
+      setTimeout(() => {
+        this.palyerList = null;
+        this.$router.go(-1);
+      }, 2000);
     },
     initAllDepart(id) {
       reqDepartList({
