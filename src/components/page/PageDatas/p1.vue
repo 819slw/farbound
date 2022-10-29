@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-16 20:17:54
+ * @LastEditTime: 2022-10-29 13:07:12
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -250,16 +250,20 @@ export default {
       });
     },
     backarrow() {
-      this.$router.push("/index");
+      // this.$router.push("/index");
+      window.open(`${window.location.origin}/#/index`, "_blank");
     },
     moreAlarm() {
-      this.$router.push("/alarmImg");
+      window.open(`${window.location.origin}/#/alarmImg`, "_blank");
+      // this.$router.push("/alarmImg");
     },
     videoInto() {
-      this.$router.push("/video");
+      window.open(`${window.location.origin}/#/video`, "_blank");
+      // this.$router.push("/video");
     },
     imgInto() {
-      this.$router.push("/img");
+      // this.$router.push("/img");
+      window.open(`${window.location.origin}/#/img`, "_blank");
     },
     initLogList0() {
       getLogList({
