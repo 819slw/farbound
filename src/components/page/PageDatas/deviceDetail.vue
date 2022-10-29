@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-29 13:42:22
+ * @LastEditTime: 2022-10-29 13:48:37
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -110,8 +110,8 @@
 
     <div class="imgListDialog">
       <el-image
-      :src="a.detail[0].pic_url" v-for="a in imgList" :key="a.id"
-      :preview-src-list="imgList.map(v => v.detail[0].pic_url)">
+      :src="a" v-for="(a,index) in getImgList(imgList)" :key="index"
+      :preview-src-list="getImgList(imgList)">
     </el-image>
     <el-empty v-if="imgList.length == 0" description="暂无数据"></el-empty>
     </div>
@@ -291,6 +291,14 @@ export default {
     this.initAlarmList();
   },
   methods: {
+    getImgList(list) {
+      let arr = [];
+      list.forEach(v => {
+        let a = v.detail.map(el => el.pic_url);
+        arr = [...arr, ...a];
+      });
+      return arr;
+    },
     setTitle(deviceName) {
       let domDiv = document.createElement("div");
       domDiv.innerText = deviceName;
