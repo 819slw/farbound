@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-04 12:53:55
+ * @LastEditTime: 2022-10-29 13:15:35
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -47,6 +47,8 @@
       <div class="rightArea">
         <el-image
           :src="a.detail[0].pic_url" v-for="a in imgList" :key="a.id"
+          @click="setTitle(a)"
+
           :preview-src-list="imgList.map(v => v.detail[0].pic_url)"></el-image>
 
         <!-- <img :src="el.detail[0].pic_url" v-for="el in imgList" :key="el.id" alt=""> -->
@@ -91,6 +93,21 @@ export default {
     this.initAllDepart();
   },
   methods: {
+    setTitle(obj) {
+      let domDiv = document.createElement("div");
+      domDiv.id = "bigTitle";
+      domDiv.innerText = obj.deviceName;
+      domDiv.style.position = "fixed";
+      domDiv.style.bottom = "130px";
+      domDiv.style.right = "20%";
+      domDiv.style.color = "#fff";
+      domDiv.style.fontSize = "25px";
+      this.$nextTick(() => {
+        let dom = document.querySelector(".el-image-viewer__wrapper");
+        console.log(dom);
+        dom.appendChild(domDiv);
+      });
+    },
     clickItem(item, i) {
       this.active = i;
       this.getimgList(item.deviceSerial);

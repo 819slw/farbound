@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-16 20:16:55
+ * @LastEditTime: 2022-10-29 13:34:12
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -98,7 +98,7 @@ export default {
       isPlayer: true,
       token: "",
       deviceListOnline: [],
-      timeVal: 1000 * 30,
+      timeVal: 1000 * 130,
       positionStyle: {
         "2x2": "foreGrid",
         "2x3": "sixGrid",
@@ -208,8 +208,29 @@ export default {
     });
   },
   methods: {
+    setTitle(deviceName, i) {
+      let domDiv = document.createElement("div");
+      domDiv.innerText = deviceName;
+      domDiv.style.position = "fixed";
+      domDiv.style.top = "20px";
+      domDiv.style.right = "20px";
+      domDiv.style.color = "#999";
+      domDiv.style.fontSize = "14px";
+      domDiv.style.borderRadius = "8px";
+      domDiv.style.padding = "4px 10px";
+      domDiv.style.background = "#ffffff";
+
+      this.$nextTick(() => {
+        let dom = document.querySelector(`#player${i}`);
+        console.log(dom);
+        dom.appendChild(domDiv);
+      });
+    },
     dbclickHandle(obj, i) {
       obj.entity.fullScreen();
+      // setTimeout(() => {
+      this.setTitle(obj.name, i + 1);
+      // }, 1000);
     },
     initSettimeout() {
       clearInterval(this.timer);
@@ -470,6 +491,9 @@ export default {
     width: 100%;
     color: #fff;
     font-weight: bold;
+    position: sticky;
+    z-index: 999999;
+    background: #05071f;
     .icon {
       font-size: 20px;
       padding: 10px;

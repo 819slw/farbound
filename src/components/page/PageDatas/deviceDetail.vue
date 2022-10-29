@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-13 00:08:45
+ * @LastEditTime: 2022-10-29 13:42:22
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -56,6 +56,7 @@
         </div>
       </div>
       <div class="rightArea" @dblclick="dbclickHandle">
+        <div class="devicename">{{ $route.query.deviceName }}</div>
         <div style="width:100%" id="deviceArea"></div>
       </div>
       <div class="leftArea">
@@ -290,8 +291,26 @@ export default {
     this.initAlarmList();
   },
   methods: {
+    setTitle(deviceName) {
+      let domDiv = document.createElement("div");
+      domDiv.innerText = deviceName;
+      domDiv.style.position = "fixed";
+      domDiv.style.top = "20px";
+      domDiv.style.right = "20px";
+      domDiv.style.color = "#999";
+      domDiv.style.fontSize = "14px";
+      domDiv.style.borderRadius = "8px";
+      domDiv.style.padding = "4px 10px";
+      domDiv.style.background = "#ffffff";
+
+      this.$nextTick(() => {
+        let dom = document.querySelector(`#deviceArea`);
+        dom.appendChild(domDiv);
+      });
+    },
     dbclickHandle() {
       this.palyer.fullScreen();
+      this.setTitle(this.$route.query.deviceName);
     },
     callbackPlayerHandler() {
       let dom = document.querySelector("#backPlayerEntity");
@@ -513,6 +532,17 @@ export default {
     margin-top: 50px;
     text-align: center;
   }
+  .devicename {
+    color: #999;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-size: 14px;
+    padding: 4px 10px;
+    background: #fff;
+    border-radius: 8px;
+    z-index: 9999;
+  }
   .pickerQi {
     margin-right: 40px;
   }
@@ -711,6 +741,7 @@ export default {
       overflow: hidden;
       display: flex;
       flex-wrap: wrap;
+      position: relative;
     }
     .lleft {
       width: 20%;
@@ -736,6 +767,9 @@ export default {
     width: 100%;
     color: #fff;
     font-weight: bold;
+    position: sticky;
+    z-index: 999999;
+    background: #05071f;
     .icon {
       font-size: 20px;
       padding: 10px;
