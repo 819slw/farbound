@@ -1,5 +1,7 @@
 <template>
   <div>
+    <div class="flexBox">
+      <el-input style="width:200px" v-model="inputName" placeholder="请输入设备名称"></el-input>
     <!--分页-->
     <el-pagination
       @size-change="handleSizeChange"
@@ -10,7 +12,10 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!--    <el-button type="primary" title="批量设置抓图时间模板" size="medium" @click="intoMuseum">批量设置</el-button>-->
-    <el-button type="primary" title="多窗口" size="medium" @click="lunxun">多窗口</el-button>
+    <!-- <el-button type="primary" title="多窗口" size="medium" @click="lunxun">多窗口</el-button> -->
+
+    </div>
+
     <!--表格内容-->
     <el-table
       ref="list"
@@ -204,6 +209,7 @@ export default {
   components: { preview, lunxun },
   data() {
     return {
+      inputName: "",
       rules: {
         lng: [{ required: true, message: "内容不能为空", trigger: "change" }],
         lat: [{ required: true, message: "内容不能为空", trigger: "change" }],
@@ -403,7 +409,10 @@ export default {
   padding: 0 10px;
   margin-top: 10px;
 }
-
+.flexBox {
+  display: flex;
+  justify-content: space-between;
+}
 .upload-demo {
   margin-left: 15px !important;
 }
