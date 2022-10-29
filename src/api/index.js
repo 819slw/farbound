@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-14 11:17:12
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-02 22:48:11
+ * @LastEditTime: 2022-10-29 13:54:48
  * @FilePath: /farbound/src/api/index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -108,3 +108,11 @@ export const updateLocation = data =>
 // 停止操作
 export const moveDevice = data =>
   ajax(BASE_URL + "/api/v1/back/device/move", data, "POST");
+
+// 停止操作
+export const statisticaltypes = data =>
+  ajax(BASE_URL + "/api/v1/back/device/statistical/types", data, "POST");
+
+// 停止操作
+export const statisticalalarm = data =>
+  ajax(BASE_URL + "/api/v1/back/device/statistical/alarm", data, "POST");

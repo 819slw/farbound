@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-28 19:57:35
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-29 13:07:12
+ * @LastEditTime: 2022-10-29 14:15:58
  * @FilePath: /farbound/src/components/page/PageDatas/p1.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -154,7 +154,13 @@
 import * as echarts from "echarts";
 import EZUIKit from "ezuikit-js";
 
-import { reqDeviceList, getLogList, reqDepartList } from "@/api/index";
+import {
+  reqDeviceList,
+  getLogList,
+  reqDepartList,
+  statisticalalarm,
+  statisticaltypes
+} from "@/api/index";
 export default {
   data() {
     return {
@@ -174,21 +180,13 @@ export default {
       BillboardObject: null,
       // 设备类型统计: https://www.makeapie.cn/echarts_content/xvh81yeAKa.html
       deviceTypeData: {
-        xData: ["防外破监测", "视频监测", "图像检测", "布控球"],
-        yData: [12, 1230, 425, 232]
+        xData: [],
+        yData: []
       },
       //报警统计: https://www.makeapie.cn/echarts_content/x0oZWoncE.html
       alarmData: {
-        yData: [5000, 2600, 1300, 1300, 1250, 1250, 1500],
-        xData: [
-          "吊车",
-          "塔吊",
-          "挖掘机",
-          "工程车",
-          "人员入侵检测",
-          "异物悬挂",
-          "烟火识别"
-        ]
+        yData: [],
+        xData: []
       },
       deviceTotal: [
         {
@@ -220,10 +218,6 @@ export default {
     console.log(this.userInfo);
     this.$nextTick(() => {
       this.initHieght();
-      // 设备类型统计-init
-      this.initdeviceType();
-      // 报警统计-init
-      this.initAlarm();
       // 初始化地图
       this.initMap();
 
@@ -308,6 +302,37 @@ export default {
         // 初始化所有标注点
         this.initAllPoint();
       });
+
+      statisticalalarm({
+        depart_id: id || this.userInfo.depart_id
+      }).then(res => {
+        console.log("报警");
+        console.log(res);
+        (res.data || []).forEach(v => {
+          this.alarmData.yData.push(v.count);
+          this.alarmData.xData.push(v.name);
+        });
+
+        console.log("this.alarmData");
+        console.log(this.alarmData);
+
+        // 报警统计-init
+        this.initAlarm();
+      });
+
+      statisticaltypes({
+        depart_id: id || this.userInfo.depart_id
+      }).then(res => {
+        (res.data || []).forEach(v => {
+          this.deviceTypeData.yData.push(v.count);
+          this.deviceTypeData.xData.push(v.name);
+        });
+
+        console.log("this.deviceTypeData");
+        console.log(this.deviceTypeData);
+        // 设备类型统计-init
+        this.initdeviceType();
+      });
     },
     initAllPoint() {
       this.deviceArr.forEach(v => {
@@ -381,6 +406,8 @@ export default {
         // 接口 设备列表
         this.initDeviceList();
       });
+      // ❌❌❌
+      // this.initDeviceList();
     },
     // 设备总数 - init
     initDeviceTotal() {
