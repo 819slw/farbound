@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-10-29 13:48:37
+ * @LastEditTime: 2022-11-13 17:34:14
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -34,8 +34,8 @@
         <div class="llfeftImg">
 
           <el-image
-          :src="a.detail[0].pic_url" v-for="a in logList.slice(0,2)" :key="a.id"
-          :preview-src-list="logList.map(v => v.detail[0].pic_url)">
+          :src="a.pic_url" v-for="a in logList.slice(0,2)" :key="a.id"
+          :preview-src-list="logList.map(v => v.pic_url)">
         </el-image>
           <div class="emptyBox" v-if="logList.length == 0">
             暂无数据
@@ -46,8 +46,8 @@
         <div class="llfeftImg">
 
           <el-image
-          :src="a.detail[0].pic_url" v-for="a in alarmList.slice(0,2)" :key="a.id"
-          :preview-src-list="alarmList.map(v => v.detail[0].pic_url)">
+          :src="a.pic_url" v-for="a in alarmList.slice(0,2)" :key="a.id"
+          :preview-src-list="alarmList.map(v => v.pic_url)">
         </el-image>
           <div class="emptyBox" v-if="alarmList.length == 0">
             暂无数据
@@ -463,7 +463,9 @@ export default {
         start: this.dateFormat(new Date().getTime() - 24 * 60 * 60 * 1000),
         end: this.dateFormat(new Date().getTime())
       });
-      this.logList = info.data.list || [];
+      // this.logList = info.data.list || [];
+      let arr = info.data.list.reduce((a, b) => [...a, ...b.detail], []);
+      this.logList = arr;
     },
     async initAlarmList() {
       let info = await getAlarmByDeviceSerialWithTime({
@@ -471,7 +473,9 @@ export default {
         start: this.dateFormat(new Date().getTime() - 24 * 60 * 60 * 1000),
         end: this.dateFormat(new Date().getTime())
       });
-      this.alarmList = info.data.list || [];
+      // this.alarmList = info.data.list || [];
+      let arr = info.data.list.reduce((a, b) => [...a, ...b.detail], []);
+      this.alarmList = arr;
     },
 
     createPlayer() {

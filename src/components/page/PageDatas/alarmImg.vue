@@ -2,7 +2,7 @@
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
  * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-11-13 17:10:58
+ * @LastEditTime: 2022-11-13 17:31:50
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -47,10 +47,10 @@
       <div class="rightArea">
 
         <el-image
-        :src="a.detail[0].pic_url" v-for="a in imgList" :key="a.id"
+        :src="a.pic_url" v-for="a in imgList" :key="a.id"
         @click="setTitle(a)"
 
-        :preview-src-list="imgList.map(v => v.detail[0].pic_url)"></el-image>
+        :preview-src-list="imgList.map(v => v.pic_url)"></el-image>
 
         <!-- <img :src="el.detail[0].pic_url" v-for="el in imgList" :key="el.id" alt=""> -->
         <div class="emptyBox" v-if="!imgList || imgList.length == 0">
@@ -139,7 +139,8 @@ export default {
           this.dateFormat(new Date().getTime())
       }).then(res => {
         if (res.data.list && res.data.list.length > 0) {
-          this.imgList = res.data.list.slice(0, 9);
+          let arr = res.data.list.reduce((a, b) => [...a, ...b.detail], []);
+          this.imgList = arr;
         } else {
           this.imgList = [];
         }
