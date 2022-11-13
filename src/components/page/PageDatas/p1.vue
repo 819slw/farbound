@@ -244,20 +244,20 @@ export default {
       });
     },
     backarrow() {
-      // this.$router.push("/index");
-      window.open(`${window.location.origin}/#/index`, "_blank");
+      this.$router.push("/index");
+      // window.open(`${window.location.origin}/#/index`, "_blank");
     },
     moreAlarm() {
-      window.open(`${window.location.origin}/#/alarmImg`, "_blank");
-      // this.$router.push("/alarmImg");
+      // window.open(`${window.location.origin}/#/alarmImg`, "_blank");
+      this.$router.push("/alarmImg");
     },
     videoInto() {
-      window.open(`${window.location.origin}/#/video`, "_blank");
-      // this.$router.push("/video");
+      // window.open(`${window.location.origin}/#/video`, "_blank");
+      this.$router.push("/video");
     },
     imgInto() {
-      // this.$router.push("/img");
-      window.open(`${window.location.origin}/#/img`, "_blank");
+      this.$router.push("/img");
+      // window.open(`${window.location.origin}/#/img`, "_blank");
     },
     initLogList0() {
       getLogList({
