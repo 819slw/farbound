@@ -175,7 +175,7 @@
 
     <el-form-item label="隶属部门" required prop="depart_id">
       <el-select v-model="form.depart_id" placeholder="请选择部门">
-        <el-option v-for="a in departList" :key="a.id" :label="a.depart_id" :value="a.depart_name"></el-option>
+        <el-option v-for="a in departList" :key="a.id" :label="a.depart_name" :value="a.depart_id"></el-option>
       </el-select>
     </el-form-item>
 
