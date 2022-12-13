@@ -1,8 +1,8 @@
 <!--
  * @Author: shlw@toplion.com.cn shlw@toplion.com.cn
  * @Date: 2022-09-29 22:56:19
- * @LastEditors: shlw@toplion.com.cn shlw@toplion.com.cn
- * @LastEditTime: 2022-11-13 20:11:15
+ * @LastEditors: Duanggg12131 shlw@toplion.com.cn
+ * @LastEditTime: 2022-12-13 22:44:39
  * @FilePath: /farbound/src/components/page/PageDatas/img.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -266,28 +266,36 @@ export default {
       });
     },
     clearAllEntity() {
+      let arr = [];
       this.palyerList.forEach(v => {
-        v.entity = null;
+        v.entity && v.entity.stop && arr.push(v.entity.stop());
       });
+      return Promise.all(arr);
     },
     createPlayer(deviceSerial, index, name) {
-      let dom = document.querySelector(
-        `.${this.positionStyle[this.potionVal]}`
-      );
-      let width = dom.offsetWidth;
-      let height = dom.offsetHeight;
-      this.palyerList[index].name = name;
-      this.palyerList[index].entity = new EZUIKit.EZUIKitPlayer({
-        id: this.palyerList[index].id, // 视频容器ID
-        accessToken: this.token,
-        template: "2ccb62e662de445d9d67e5f0e57af6e1",
-        url: "ezopen://open.ys7.com/" + deviceSerial + "/1.hd.live",
-        height,
-        width
-      });
+      if (this.palyerList[index] && this.palyerList[index].entity) {
+        this.palyerList[index].entity.play({
+          url: "ezopen://open.ys7.com/" + deviceSerial + "/1.hd.live"
+        });
+      } else {
+        let dom = document.querySelector(
+          `.${this.positionStyle[this.potionVal]}`
+        );
+        let width = dom.offsetWidth;
+        let height = dom.offsetHeight;
+        this.palyerList[index].name = name;
+        this.palyerList[index].entity = new EZUIKit.EZUIKitPlayer({
+          id: this.palyerList[index].id, // 视频容器ID
+          accessToken: this.token,
+          template: "2ccb62e662de445d9d67e5f0e57af6e1",
+          url: "ezopen://open.ys7.com/" + deviceSerial + "/1.hd.live",
+          height,
+          width
+        });
+      }
     },
-    setPlayerNumber() {
-      this.clearAllEntity();
+    async setPlayerNumber() {
+      await this.clearAllEntity();
       let num = this.positionStyleNumber[this.potionVal];
       let playerArr = [];
       if (this.num + num > this.deviceListOnline.length - 1) {
