@@ -60,6 +60,20 @@ export default new Router({
           }
         },
         {
+          path: "/bird/line",
+          component: () => import("../components/page/bird/line.vue"),
+          meta: {
+            title: "线路管理"
+          }
+        },
+        {
+          path: "/bird/tower",
+          component: () => import("../components/page/bird/tower.vue"),
+          meta: {
+            title: "杆塔管理"
+          }
+        },
+        {
           path: "/part",
           component: () => import("../components/page/My/part.vue"),
           meta: {

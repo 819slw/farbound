@@ -1,7 +1,6 @@
 <template>
   <el-aside width="auto" height="auto">
-    <el-menu :collapse="isCollapse" :default-active="onRoutes" background-color="#232323" text-color="#ccc"
-             active-text-color="#ddd" unique-opened router>
+    <el-menu :collapse="isCollapse" :default-active="onRoutes" background-color="#232323" text-color="#ccc" active-text-color="#ddd" unique-opened router>
       <template v-for="item in items">
         <template v-if="item.subItems">
           <el-submenu :index="item.path">
@@ -9,10 +8,20 @@
               <i :class="item.icon"></i>
               <span slot="title">{{ item.title }}</span>
             </template>
-            <el-menu-item v-for="(subItem, i) in item.subItems" @click="onclick(subItem.path)" :index="subItem.path"
-                          :key="i">
-              {{ subItem.title }}
-            </el-menu-item>
+            <div v-for="(subItem, i) in item.subItems"  :key="i">
+              <el-menu-item @click="onclick(subItem.path)" :index="subItem.path" v-if="!subItem.subItems">
+                <i :class="item.icon"></i>
+                <span slot="title">{{ subItem.title }}</span>
+              </el-menu-item>
+              <el-submenu :index="subItem.path" v-else>
+                <template slot="title">
+                  <i :class="item.icon"></i>
+                  <span slot="title">{{ subItem.title }}</span></template>
+                <el-menu-item v-for="(subItem1, ii) in subItem.subItems" @click="onclick(subItem.path)" :index="subItem1.path" :key="ii">
+                    {{ subItem1.title }}
+                </el-menu-item>
+              </el-submenu>
+            </div>
           </el-submenu>
         </template>
         <template v-else>
@@ -56,16 +65,49 @@ export default {
           icon: "el-icon-setting",
           subItems: [
             {
-              title: "设备列表",
+              title: "防外破监测",
+              icon: "el-icon-setting",
               path: "/device"
+            },
+            {
+              title: "激光驱鸟装置",
+              icon: "el-icon-setting",
+              path: "/bird",
+              subItems: [
+                {
+                  title: "线路管理",
+                  path: "/bird/line"
+                },
+                {
+                  title: "杆塔管理",
+                  path: "/bird/tower"
+                }
+              ]
+            },
+            {
+              title: "视频监测",
+              icon: "el-icon-setting",
+              path: "/device1"
+            },
+            {
+              title: "图像监测",
+              icon: "el-icon-setting",
+              path: "/device2"
+            },
+            {
+              title: "布控装置",
+              icon: "el-icon-setting",
+              path: "/device3"
+            },
+            {
+              title: "传感器",
+              icon: "el-icon-setting",
+              path: "/device4"
             },
             {
               title: "设备主页",
               path: "/fristPage"
-            } /*{
-              title: '轮询播放',
-              path: '/lunxun1'
-            },*/
+            }
           ]
         }
       ]

@@ -116,3 +116,15 @@ export const statisticaltypes = data =>
 // 停止操作
 export const statisticalalarm = data =>
   ajax(BASE_URL + "/api/v1/back/device/statistical/alarm", data, "POST");
+
+// 停止操作
+export const lineList = data =>
+  ajax(BASE_URL + "/api/v1/line/list", data, "POST", true);
+
+// 停止操作
+export const addLine = data =>
+  ajax(BASE_URL + "/api/v1/line/add", data, "POST", true);
+
+// 停止操作
+export const delLine = data =>
+  ajax(BASE_URL + "/api/v1/line/del", data, "POST", true);
