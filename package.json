@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@amap/amap-jsapi-loader": "^1.0.1",
     "avue-data": "^2.0.0",
     "axios": "^0.18.0",
     "echarts": "^4.9.0",

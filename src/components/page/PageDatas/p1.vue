@@ -153,7 +153,7 @@
 <script>
 import * as echarts from "echarts";
 import EZUIKit from "ezuikit-js";
-
+import AMapLoader from "@amap/amap-jsapi-loader";
 import {
   reqDeviceList,
   getLogList,
@@ -164,6 +164,7 @@ import {
 export default {
   data() {
     return {
+      mapEntity: null,
       bigTitle: "",
       dialogVisible1: false,
       mapPoint: {},
@@ -335,6 +336,23 @@ export default {
       });
     },
     initAllPoint() {
+      if (this.deviceArr.length > 0) {
+        let firstObj = this.deviceArr[0];
+        var position = new AMap.LngLat(firstObj.lng, firstObj.lat); // 标准写法
+        this.mapEntity.setCenter(position);
+      }
+      this.deviceArr.forEach(v => {
+        if (v.lng && v.lat) {
+          console.log("v.deviceName");
+          console.log(v.deviceName);
+          let marker = new AMap.Marker({
+            position: new AMap.LngLat(v.lng, v.lat), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+            title: v.deviceName
+          });
+          this.mapEntity.add(marker);
+        }
+      });
+      return;
       this.deviceArr.forEach(v => {
         // this.BillboardObject
         let entity = new YJ.Obj.BillboardObject({
@@ -398,6 +416,28 @@ export default {
     },
     // 初始化地图
     initMap() {
+      AMapLoader.load({
+        key: "c672380c72f3121a8dd1708822443978", // 申请好的Web端开发者Key，首次调用 load 时必填
+        version: "2.0", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+        plugins: [], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
+        AMapUI: {
+          // 是否加载 AMapUI，缺省不加载
+          version: "1.1", // AMapUI 版本
+          plugins: ["overlay/SimpleMarker"] // 需要加载的 AMapUI ui插件
+        },
+        Loca: {
+          // 是否加载 Loca， 缺省不加载
+          version: "2.0" // Loca 版本
+        }
+      })
+        .then(AMap => {
+          this.mapEntity = new AMap.Map("mapInit");
+          // this.mapEntity.addControl(new AMap.Scale());
+        })
+        .catch(e => {
+          console.error(e); //加载错误提示
+        });
+
       // YJ.on().then(() => {
       //   new YJ.YJEarth("mapInit");
       //   new YJ.Layer.GDWXImagery();
