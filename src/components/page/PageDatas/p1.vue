@@ -432,6 +432,7 @@ export default {
       })
         .then(AMap => {
           this.mapEntity = new AMap.Map("mapInit");
+          this.initDeviceList();
           // this.mapEntity.addControl(new AMap.Scale());
         })
         .catch(e => {
@@ -447,7 +448,6 @@ export default {
       //   this.initDeviceList();
       // });
       // ❌❌❌
-      this.initDeviceList();
     },
     // 设备总数 - init
     initDeviceTotal() {

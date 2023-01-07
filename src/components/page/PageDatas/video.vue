@@ -191,8 +191,12 @@ export default {
       this.isPlayer = false;
       setTimeout(() => {
         this.isPlayer = true;
-        this.$nextTick(() => {
+        this.$nextTick(async () => {
           this.initSettimeout();
+          await this.clearAllEntity();
+          this.palyerList.forEach(v => {
+            v.entity = null;
+          });
           this.setPlayerNumber();
         });
       }, 1000);
@@ -250,11 +254,12 @@ export default {
       );
     },
     back() {
-      this.$message.info("正在关闭视频通道，2秒后返回");
-      setTimeout(() => {
-        this.palyerList = null;
-        this.$router.go(-1);
-      }, 2000);
+      this.palyerList = null;
+      this.clearAllEntity();
+      this.palyerList.forEach(v => {
+        v.entity = null;
+      });
+      this.$router.go(-1);
     },
     initAllDepart(id) {
       reqDepartList({
