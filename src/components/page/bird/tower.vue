@@ -9,8 +9,8 @@
       :total="infos_length"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <el-button type="primary" title="添加人员" size="medium" @click="intoMuseum">添加人员</el-button>
-    <el-button type="primary" title="部门" size="medium" @click="onDepart">部门</el-button>
+    <el-button type="primary" title="新增" size="medium" @click="intoMuseum">新增杆塔</el-button>
+    <!-- <el-button type="primary" title="部门" size="medium" @click="onDepart">部门</el-button> -->
     <!--表格内容-->
     <el-table
       ref="list"
@@ -40,50 +40,50 @@
           <span style="margin-left: 5px">{{ scope.row.depart_name }}</span>
         </template>
       </el-table-column>
+
       <el-table-column
         align="center"
-        label="用户昵称"
+        label="线路名称"
       >
         <template slot-scope="scope">
-          <span style="margin-left: 5px">{{ scope.row.nick_name }}</span>
+          <span style="margin-left: 5px">{{ scope.row.line_name }}</span>
         </template>
       </el-table-column>
+
       <el-table-column
         align="center"
-        label="用户名"
+        label="杆塔名称"
       >
         <template slot-scope="scope">
-          <span style="margin-left: 5px">{{ scope.row.username }}</span>
+          <span style="margin-left: 5px">{{ scope.row.tower_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column
+
+      <!-- <el-table-column
         label="创建时间"
         align="center"
         >
         <template slot-scope="scope">
           <span style="margin-left: 5px">{{ scope.row.create_at }}</span>
         </template>
-      </el-table-column>
-      <el-table-column
-        label="角色"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <span>{{ scope.row.role_name }}</span>
-        </template>
-      </el-table-column>
+      </el-table-column> -->
+
       <el-table-column
         label="操作"
         width="220"
         align="center">
-        <template slot="header" slot-scope="scope">
+        <!-- <template slot="header" slot-scope="scope">
           <el-input
             v-model="search"
             size="mini"
             placeholder="输入用户昵称搜索"/>
-        </template>
+        </template> -->
         <template slot-scope="scope">
-          <el-button @click="onDelete(scope.row.username)" type="danger" title="删除" size="small"
+          <el-button @click="editData(scope.row)" type="primary" title="删除" size="small"
+          >编辑
+          </el-button>
+
+          <el-button @click="onDelete(scope.row.tower_id)" type="danger" title="删除" size="small"
           >删除
           </el-button>
         </template>
@@ -91,7 +91,7 @@
     </el-table>
     <!--弹出框-->
     <el-dialog
-      title="添加人员"
+      :title="isEdit ? '编辑线路' : '添加线路'"
       :visible.sync="isShowEditDialog"
       width="500px"
     >
@@ -100,28 +100,21 @@
         :rules="rule"
         :model="formFileds"
         label-width="100px" class="demo-ruleForm">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="formFileds.username"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="formFileds.password"></el-input>
-        </el-form-item>
-        <el-form-item label="昵称" prop="nick_name">
-          <el-input v-model="formFileds.nick_name"></el-input>
-        </el-form-item>
-        <el-form-item label="部门" prop="depart_id">
-          <el-input :disabled="true" v-model="formFileds.depart_name"></el-input>
-        </el-form-item>
-        <el-form-item label="部门" prop="role_id">
-          <el-select v-model="formFileds.role_id" placeholder="请选择">
+        <el-form-item label="部门" prop="username">
+
+          <el-select v-model="formFileds.line_id" placeholder="请选择">
             <el-option
-              v-for="item in roleList"
-              :key="item.role_id"
-              :label="item.role_name"
-              :value="item.role_id">
+              v-for="item in lineList"
+              :key="item.line_id"
+              :label="item.line_name"
+              :value="item.line_id">
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="杆塔名称" prop="password">
+          <el-input type="text" v-model="formFileds.tower_name"></el-input>
+        </el-form-item>
+
         <div style="margin-left: 30%">
           <el-button type="primary" title="提交" size="medium"
                      @click="submitUpload('formFileds')">提交
@@ -154,40 +147,31 @@
 <script>
 //引入定义ajax请求方法
 import {
-  reqDeleteUser,
-  reqAddUser,
-  reqUserList,
+  delTower,
+  addTower,
+  towerList,
   reqDepartList,
-  reqRoleList
+  reqRoleList,
+  lineList,
+  updateTower
 } from "../../../api";
 
 export default {
   name: "Table",
   data() {
     return {
+      lineList: [],
       currentPage: 1,
       pagesize: 10,
       formFileds: {
         //表单内容
-        username: "",
-        password: "",
-        nick_name: "",
-        depart_id: "", //当前选择的部门id
-        depart_name: "",
-        role_id: ""
+        line_id: "",
+        tower_name: "" //当前选择的部门id
       },
       rule: {
-        username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 1, max: 10000, message: "请输入用户名", trigger: "blur" }
-        ],
-        password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 1, max: 10000, message: "请输入密码", trigger: "blur" }
-        ],
-        nick_name: [
-          { required: true, message: "请输入昵称", trigger: "blur" },
-          { min: 1, max: 10000, message: "请输入昵称", trigger: "blur" }
+        line_id: [{ required: true, message: "请选择线路", trigger: "blur" }],
+        tower_name: [
+          { required: true, message: "请输入杆塔名称", trigger: "blur" }
         ]
       },
       isShowEditDialog: false,
@@ -201,14 +185,18 @@ export default {
       departList: [],
       defaultProps: {
         children: "children",
-        label: "depart_name"
+        label: "depart_name",
+        value: "depart_id",
+        checkStrictly: true
       },
       depart_map: new Map(),
       depart_name_map: new Map(),
       roleList: [],
       role_name_map: new Map(),
       role_id: "",
-      loading: false
+      loading: false,
+      allDepartList: [],
+      isEdit: false
     };
   },
   mounted() {
@@ -217,6 +205,7 @@ export default {
     this.getInfoList(this.userInfo.depart_id);
     this.getDepartList(this.userInfo.depart_id);
     this.getRoleList();
+    this.initlineList();
   },
   watch: {
     search(newVal) {
@@ -224,6 +213,43 @@ export default {
     }
   },
   methods: {
+    initlineList() {
+      lineList({
+        depart_id: this.userInfo.depart_id
+      }).then(res => {
+        if (res.data && res.data.list && res.data.list.length > 0) {
+          this.lineList = res.data.list;
+        }
+      });
+    },
+    editData(data) {
+      this.isEdit = true;
+      this.formFileds.tower_name = data.tower_name;
+      this.formFileds.line_id = data.line_id;
+      this.formFileds.tower_id = data.tower_id;
+      let obj = this.allDepartList.find(v => v.depart_id == data.depart_id);
+      let arr = [];
+      if (data.depart_id != "1/") {
+        arr = [obj.pid, data.depart_id];
+      } else {
+        arr = [data.depart_id];
+      }
+      console.log(arr);
+      if (arr[0] != "1/") {
+        arr.unshift("1/");
+      }
+      this.formFileds.depart_id = arr;
+      this.isShowEditDialog = true;
+    },
+    handleChange(obj, el) {
+      console.log("obj");
+      console.log(obj);
+      let id = obj[obj.length - 1];
+      this.formFileds.depart_name = this.allDepartList.find(
+        v => v.depart_id == id
+      ).depart_name;
+      console.log(this.formFileds);
+    },
     handleNodeClick(data) {
       this.formFileds.depart_id = data.depart_id;
       this.getInfoList(data.depart_id);
@@ -260,6 +286,7 @@ export default {
       reqDepartList({ depart_id }).then(res => {
         console.log(res);
         if (res.code === 0 || res.code === 200) {
+          this.allDepartList = [...res.data];
           let arr = this.transListToTreeData(res.data, this.userInfo.depart_id);
           res.data[0].children = arr;
           let obj;
@@ -282,33 +309,35 @@ export default {
     getInfoList(depart_id) {
       this.infos = [];
       this.loading = true;
-      if (this.depart_map.has(depart_id)) {
-        this.infos = this.depart_map.get(depart_id);
+      // if (this.depart_map.has(depart_id)) {
+      //   this.infos = this.depart_map.get(depart_id);
+      //   this.loading = false;
+      //   console.log("12312");
+      // } else {
+      towerList({ depart_id }).then(res => {
+        if (res.data && res.data.list && res.code === 200) {
+          this.infos = res.data.list;
+          this.infos2.set(1, res.data);
+          this.infos_length = this.infos.length;
+        } else {
+          this.infos = [];
+        }
         this.loading = false;
-      } else {
-        reqUserList({ depart_id }).then(res => {
-          console.log(res);
-          if ((res.data && res.code === 0) || res.code === 200) {
-            this.infos = res.data;
-            this.infos2.set(1, res.data);
-            this.infos_length = this.infos.length;
-          }
-          this.loading = false;
-          this.depart_map.set(depart_id, this.infos);
-        });
-      }
+        // this.depart_map.set(depart_id, this.infos);
+      });
+      // }
     },
-    onDelete(username) {
+    onDelete(id) {
       //删除用户
       this.$confirm("确定要删除当前行吗？", "删除", {
         comfirmButtonText: "确定",
         cancelButtonText: "取消"
       })
         .then(() => {
-          reqDeleteUser({ username }).then(res => {
-            console.log(res);
+          delTower({ tower_id: id }).then(res => {
             if (res.code === 200 || res.code === 0) {
               this.$message.success("删除成功");
+              this.getInfoList(this.userInfo.depart_id);
             } else {
               this.$message.error(res.msg);
             }
@@ -321,39 +350,40 @@ export default {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
           let obj = {
-            username: this.formFileds.username,
-            password: this.formFileds.password,
-            nick_name: this.formFileds.nick_name,
-            depart_id: this.formFileds.depart_id,
-            role_id: this.formFileds.role_id
+            line_id: this.formFileds.line_id,
+            tower_name: this.formFileds.tower_name
           };
-          reqAddUser(obj).then(res => {
-            if (res.code == 200 || res.code == 0) {
+          let info = this.lineList.find(v => v.line_id == obj.line_id);
+          obj.depart_id = info.depart_id;
+          obj.depart_name = info.depart_name;
+          if (this.isEdit) {
+            obj.tower_id = this.formFileds.tower_id;
+            updateTower(obj).then(res => {
               this.isShowEditDialog = false;
-              this.getInfoList(this.formFileds.depart_id);
-              let obj2 = {
-                username: this.formFileds.username,
-                nick_name: this.formFileds.nick_name,
-                depart_id: this.formFileds.depart_id,
-                role_id: this.formFileds.role_id,
-                depart_name: this.formFileds.depart_name,
-                create_at: res.data.create_at,
-                role_name: this.role_name_map.get(this.formFileds.role_id)
-              };
-              this.infos.unshift(obj2);
-              this.depart_map.set(this.formFileds.depart_id, this.infos);
-              this.formFileds.username = "";
-              this.formFileds.password = "";
-              this.formFileds.nick_name = "";
-            } else {
-            }
-          });
+              this.isShowEditDialog = false;
+              this.formFileds.line_name = "";
+              this.formFileds.depart_name = "";
+              this.formFileds.depart_id = [];
+              this.getInfoList(this.userInfo.depart_id);
+            });
+          } else {
+            addTower(obj).then(res => {
+              if (res.code == 200 || res.code == 0) {
+                this.isShowEditDialog = false;
+                this.formFileds.line_name = "";
+                this.formFileds.depart_name = "";
+                this.formFileds.depart_id = [];
+                this.getInfoList(this.userInfo.depart_id);
+              }
+            });
+          }
         } else {
           return false;
         }
       });
     },
     intoMuseum() {
+      this.isEdit = false;
       this.isShowEditDialog = true;
       this.formFileds.depart_name = this.depart_name_map.get(
         this.formFileds.depart_id

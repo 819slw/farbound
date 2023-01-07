@@ -137,7 +137,8 @@ import {
   addLine,
   lineList,
   reqDepartList,
-  reqRoleList
+  reqRoleList,
+  updateLine
 } from "../../../api";
 
 export default {
@@ -330,21 +331,34 @@ export default {
               this.formFileds.depart_id.length - 1
             ]
           };
-          addLine(obj).then(res => {
-            if (res.code == 200 || res.code == 0) {
+          if (this.isEdit) {
+            obj.line_id = this.formFileds.line_id;
+            updateLine(obj).then(res => {
+              this.isShowEditDialog = false;
               this.isShowEditDialog = false;
               this.formFileds.line_name = "";
               this.formFileds.depart_name = "";
               this.formFileds.depart_id = [];
               this.getInfoList(this.userInfo.depart_id);
-            }
-          });
+            });
+          } else {
+            addLine(obj).then(res => {
+              if (res.code == 200 || res.code == 0) {
+                this.isShowEditDialog = false;
+                this.formFileds.line_name = "";
+                this.formFileds.depart_name = "";
+                this.formFileds.depart_id = [];
+                this.getInfoList(this.userInfo.depart_id);
+              }
+            });
+          }
         } else {
           return false;
         }
       });
     },
     intoMuseum() {
+      this.isEdit = false;
       this.isShowEditDialog = true;
       this.formFileds.depart_name = this.depart_name_map.get(
         this.formFileds.depart_id

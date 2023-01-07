@@ -128,3 +128,23 @@ export const addLine = data =>
 // 停止操作
 export const delLine = data =>
   ajax(BASE_URL + "/api/v1/line/del", data, "POST", true);
+
+// 停止操作
+export const updateLine = data =>
+  ajax(BASE_URL + "/api/v1/line/update", data, "POST", true);
+
+// 停止操作
+export const towerList = data =>
+  ajax(BASE_URL + "/api/v1/tower/list", data, "POST", true);
+
+// 停止操作
+export const addTower = data =>
+  ajax(BASE_URL + "/api/v1/tower/add", data, "POST", true);
+
+// 停止操作
+export const delTower = data =>
+  ajax(BASE_URL + "/api/v1/tower/del", data, "POST", true);
+
+// 停止操作
+export const updateTower = data =>
+  ajax(BASE_URL + "/api/v1/tower/update", data, "POST", true);
